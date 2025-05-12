@@ -1,10 +1,10 @@
 package com.cyberlog.Models;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import lombok.*;
 
 @Entity
 @Data
@@ -41,8 +41,6 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String bio;
 
-
-    // usare un textArea
     @Column
     private String socialLinks;
 
@@ -57,9 +55,13 @@ public class User {
         this.updated_at = LocalDateTime.now();
     }
 
-
-    // se configura en el servicio de autenticación
     @Column(nullable = false)
     private LocalDateTime last_login;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.last_login == null) {
+            this.last_login = LocalDateTime.now();
+        }
+    }
 }
