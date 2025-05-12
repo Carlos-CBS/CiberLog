@@ -1,0 +1,170 @@
+-- Usuarios
+CREATE TABLE User (
+  id UUID PRIMARY KEY,
+  name VARCHAR(100),
+  email VARCHAR(150) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  role ENUM('admin', 'editor', 'reader') DEFAULT 'reader',
+  avatar VARCHAR(255), -- URL a imagen o emoji/icono
+  bio TEXT,
+  social_links JSON,
+  is_verified BOOLEAN DEFAULT FALSE,
+  registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  last_login_at TIMESTAMP,
+);
+
+-- Colecciones (antes Blog)
+CREATE TABLE Collection (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES User(id) ON DELETE CASCADE,
+  slug VARCHAR(255) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  summary TEXT,
+  image_url VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  views INT DEFAULT 0,
+  is_published BOOLEAN DEFAULT FALSE,
+  difficulty ENUM('basic', 'intermediate', 'advanced'),
+  UNIQUE(user_id, slug) -- Permite mismos slugs para diferentes usuarios
+);
+
+CREATE INDEX idx_collection_user ON Collection(user_id);
+
+-- Artículos
+CREATE TABLE Article (
+  id UUID PRIMARY KEY,
+  collection_id UUID REFERENCES Collection(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES User(id) ON DELETE SET NULL,
+  slug VARCHAR(255) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  content TEXT,
+  summary TEXT,
+  reading_time_minutes INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  published_at TIMESTAMP,
+  views INT DEFAULT 0,
+  status ENUM('draft', 'review', 'published') DEFAULT 'draft',
+  comment_count INT DEFAULT 0,
+  likes_count INT DEFAULT 0,+
+  useful_count INT DEFAULT 0,
+  difficulty ENUM('basic', 'intermediate', 'advanced'),
+  UNIQUE(collection_id, slug) -- Permite mismos slugs en diferentes colecciones
+);
+
+CREATE INDEX idx_article_user ON Article(user_id);
+CREATE INDEX idx_article_collection ON Article(collection_id);
+CREATE INDEX idx_article_status ON Article(status);
+
+-- Etiquetas
+CREATE TABLE Tag (
+  id UUID PRIMARY KEY,
+  name VARCHAR(100) UNIQUE NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Relación Artículos-Etiquetas
+CREATE TABLE ArticleTag (
+  article_id UUID REFERENCES Article(id) ON DELETE CASCADE,
+  tag_id UUID REFERENCES Tag(id) ON DELETE CASCADE,
+  PRIMARY KEY (article_id, tag_id)
+);
+
+-- Comentarios
+CREATE TABLE Comment (
+  id UUID PRIMARY KEY,
+  article_id UUID REFERENCES Article(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES User(id) ON DELETE SET NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  likes_count INT DEFAULT 0,
+  useful_count INT DEFAULT 0,
+  parent_comment_id UUID REFERENCES Comment(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_comment_article ON Comment(article_id);
+CREATE INDEX idx_comment_user ON Comment(user_id);
+CREATE INDEX idx_comment_parent ON Comment(parent_comment_id);
+
+-- Likes de comentarios
+CREATE TABLE CommentLike (
+  comment_id UUID REFERENCES Comment(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES User(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (comment_id, user_id)
+);
+
+-- Marcar comentario como útil
+CREATE TABLE CommentUseful (
+  comment_id UUID REFERENCES Comment(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES User(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (comment_id, user_id)
+);
+
+-- Likes de artículos
+CREATE TABLE ArticleLike (
+  article_id UUID REFERENCES Article(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES User(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (article_id, user_id)
+);
+
+-- Marcar artículo como útil
+CREATE TABLE ArticleUseful (
+  article_id UUID REFERENCES Article(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES User(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (article_id, user_id)
+);
+
+
+-- Recursos adicionales
+CREATE TABLE Resource (
+  id UUID PRIMARY KEY,
+  article_id UUID REFERENCES Article(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  file_url TEXT NOT NULL,
+  uploaded_by_user_id UUID REFERENCES User(id) ON DELETE SET NULL,
+  category ENUM('pdf', 'code', 'image', 'video', 'external_link') NOT NULL,
+  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_resource_article ON Resource(article_id);
+
+-- Marcadores de usuarios
+CREATE TABLE UserBookmark (
+  user_id UUID REFERENCES User(id) ON DELETE CASCADE,
+  article_id UUID REFERENCES Article(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, article_id)
+);
+
+-- Notificaciones
+CREATE TABLE Notification (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES User(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  link VARCHAR(255),
+  type ENUM('comment', 'like', 'mention', 'system') NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- posuble idea: Automatización futura. Podrías, por ejemplo, ocultar comentarios con 5+ reportes automáticos.
+
+CREATE TABLE Report (
+  id UUID PRIMARY KEY,
+  reporter_id UUID REFERENCES User(id) ON DELETE CASCADE,
+  target_type ENUM('article', 'comment', 'user') NOT NULL,
+  target_id UUID NOT NULL, -- ID del contenido reportado
+  reason TEXT, -- El motivo del reporte (puedes predefinir opciones)
+  status ENUM('pending', 'reviewed', 'resolved', 'dismissed') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+

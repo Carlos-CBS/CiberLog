@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crear Blog de Ciberseguridad</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css" />
+
+    <link rel="stylesheet" href="/css/createBlog.css">
+
+    <!-- Scripts externos -->
+    <script src="https://cdn.jsdelivr.net/npm/commonmark@0.30.0/dist/commonmark.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>Crear Nuevo Artículo de Ciberseguridad</h1>
+</header>
+
+<div class="form-container">
+    <form action="/saveBlog" method="POST" id="blogForm" enctype="multipart/form-data" onsubmit="return prepareFormSubmission()">
+        <div class="form-group">
+            <label for="title">Título del Artículo:</label>
+            <input type="text" id="title" name="title" required placeholder="Ej: Vulnerabilidades en Sistemas IoT 2025" />
+        </div>
+
+        <div class="form-group">
+            <label>Plantillas:</label>
+            <div class="templates">
+                <button type="button" class="template-btn" data-template="vulnerability">Análisis de Vulnerabilidad</button>
+                <button type="button" class="template-btn" data-template="tutorial">Tutorial Técnico</button>
+                <button type="button" class="template-btn" data-template="news">Noticia de Seguridad</button>
+                <button type="button" class="template-btn" data-template="poc">Prueba de Concepto</button>
+            </div>
+
+        <div class="form-group">
+            <label for="markdown-editor">Contenido (Markdown):</label>
+            <textarea id="markdown-editor" name="content" required placeholder="Escribe tu blog en Markdown aquí" rows="12"></textarea>
+        </div>
+
+        <div class="form-group">
+            <button type="submit">Publicar Artículo</button>
+        </div>
+    </form>
+</div>
+
+<script src="/js/createBlog.js" defer></script>
+<script src="/js/createBlogPlantillas.js" defer></script>
+
+
+</body>
+</html>
