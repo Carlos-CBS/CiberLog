@@ -31,6 +31,8 @@ public class UserService {
     }
 
     public String verify(User user) {
+        System.out.println("Login con: " + user.getEmail() + " / " + user.getPassword());
+
         Authentication auth = autMan.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 
         if (auth.isAuthenticated()) {
