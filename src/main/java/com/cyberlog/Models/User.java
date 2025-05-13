@@ -28,12 +28,13 @@ public class User {
     private String password;
 
     public enum Role {
-        admin, editor, reader
+        admin, user, moderator
     }
+
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role = Role.editor;
+    private Role role = Role.user;
 
     @Column
     private String avatar;

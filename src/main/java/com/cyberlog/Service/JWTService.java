@@ -1,19 +1,20 @@
 package com.cyberlog.Service;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.io.Decoders;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 
 @Service
 public class JWTService {
@@ -63,9 +64,9 @@ public class JWTService {
                 .getBody();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String userEmail = extractUserEmail(token);
-        return userEmail.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    // Modificar validateToken para no depender de UserDetails
+    public boolean validateToken(String token) {
+        return !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

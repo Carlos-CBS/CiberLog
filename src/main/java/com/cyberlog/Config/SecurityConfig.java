@@ -18,7 +18,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -34,27 +33,27 @@ public class SecurityConfig {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configuración CORS
                 .csrf(customizer -> customizer.disable()) // Deshabilitar CSRF
+                .logout(logout -> logout.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login","login-page", "/logout", "/register", "/error", "/")
-                        .permitAll() // Permitir acceso a estas rutas sin autenticación
-                        .anyRequest().authenticated()) // Resto de las rutas requieren autenticación
+                        .requestMatchers("/login", "/register", "/login-page", "/register", "/logout", "/error", "/")
+                        .permitAll() // Permitir acceso sin autenticación
+                        .anyRequest().authenticated()) // Requiere autenticación para otras rutas
+
                 .formLogin(form -> form
-                        .loginPage("/login") // Página de login personalizada (usada en navegadores)
+                        .loginPage("/login") // Página de login personalizada
                         .permitAll())
-                .httpBasic().disable() // Deshabilitar autenticación básica
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No mantener sesión
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Agregar el filtro JWT
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sin sesión de servidor
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Filtro JWT
                 .build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*")); // O especifica dominios concretos
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
-        configuration.setAllowCredentials(false); // Importante cuando se usa '*' para origins
+        configuration.setAllowCredentials(true);  // Permitir el envío de cookies
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

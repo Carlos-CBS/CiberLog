@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .actions {
+      margin-top: 20px;
+    }
+    #message {
+      margin-top: 20px;
+      padding: 10px;
+      display: none;
+    }
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .status {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .logged-in {
+      color: green;
+    }
+    .logged-out {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<h2>Login Sistema</h2>
+<form id="loginForm">
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required />
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required />
+  </div>
+
+  <button type="submit">Login</button>
+</form>
+
+<div class="actions">
+  <button id="testAuth" style="background-color: #007bff;">Test Auth</button>
+  <button id="logout" style="background-color: #dc3545;">Logout</button>
+</div>
+
+<div id="message"></div>
+<div id="authStatus" class="status"></div>
+
+<script>
+  // Estado de autenticación global
+  let isAuthenticated = false;
+
+  // Función para actualizar el indicador de estado de autenticación
+  function updateAuthStatus() {
+    const statusDiv = document.getElementById('authStatus');
+    if (isAuthenticated) {
+      statusDiv.textContent = "Estado: Autenticado";
+      statusDiv.className = "status logged-in";
+    } else {
+      statusDiv.textContent = "Estado: No autenticado";
+      statusDiv.className = "status logged-out";
+    }
+  }
+
+  // Inicializar el estado
+  updateAuthStatus();
+
+  // Función para mostrar mensajes
+  function showMessage(text, type) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.textContent = text;
+    messageDiv.className = type;
+    messageDiv.style.display = 'block';
+
+    // Ocultar el mensaje después de 5 segundos
+    setTimeout(() => {
+      messageDiv.style.display = 'none';
+    }, 5000);
+  }
+
+  // Login
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    fetch('http://localhost:8080/login-page', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password }),
+      credentials: 'include' // Importante: incluir credenciales para recibir cookies
+    })
+            .then(response => {
+              console.log('Login response status:', response.status);
+              if (!response.ok) {
+                throw new Error('Login failed with status: ' + response.status);
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.message) {
+                showMessage('Login successful!', 'success');
+                console.log('Login exitoso, token almacenado en cookie');
+                isAuthenticated = true;
+                updateAuthStatus();
+              } else if (data.error) {
+                showMessage('Error: ' + data.error, 'error');
+              } else {
+                showMessage('Unknown error occurred', 'error');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              showMessage('Error connecting to server', 'error');
+            });
+  });
+
+  // Test Auth (ruta protegida)
+  document.getElementById('testAuth').addEventListener('click', function () {
+    fetch('http://localhost:8080/test-auth', {
+      method: 'GET',
+      credentials: 'include'  // Asegúrate de incluir las credenciales (cookies)
+    })
+            .then(response => {
+              console.log('Test Auth response status:', response.status);
+              if (!response.ok) {
+                return response.json().then(data => {
+                  isAuthenticated = false;
+                  updateAuthStatus();
+                  throw new Error(data.error || 'Authentication failed');
+                });
+              }
+              return response.json();
+            })
+            .then(data => {
+              console.log('Test Auth response:', data);
+              showMessage(data.message || 'Authentication successful', 'success');
+              isAuthenticated = true;
+              updateAuthStatus();
+            })
+            .catch(error => {
+              console.error('Error en la solicitud:', error);
+              showMessage(error.message || 'Authentication failed', 'error');
+              isAuthenticated = false;
+              updateAuthStatus();
+            });
+  });
+
+  // Logout
+  document.getElementById('logout').addEventListener('click', function () {
+    // Usamos la URL correcta para el logout
+    fetch('http://localhost:8080/api/logout', {
+      method: 'POST',
+      credentials: 'include', // Asegurarte de enviar cookies
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // Añadimos un cuerpo vacío para evitar problemas con algunos servidores
+      body: JSON.stringify({})
+    })
+            .then(response => {
+              console.log('Logout response status:', response.status);
+              console.log('Logout response URL:', response.url);
+
+              // Incluso si hay un error 404, consideramos que el logout fue exitoso
+              // porque lo importante es eliminar la cookie en el cliente
+              if (response.status === 404) {
+                document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                isAuthenticated = false;
+                updateAuthStatus();
+                showMessage('Logout exitoso (eliminada cookie en cliente)', 'success');
+                return { message: 'Logged out successfully (client-side)' };
+              }
+
+              if (!response.ok) {
+                throw new Error('Logout failed with status: ' + response.status);
+              }
+
+              return response.json();
+            })
+            .then(data => {
+              showMessage(data.message || 'Logged out successfully', 'success');
+              console.log('Logout exitoso');
+              isAuthenticated = false;
+              updateAuthStatus();
+            })
+            .catch(error => {
+              console.error('Error en el logout:', error);
+
+              // Verificamos si la cookie JWT todavía existe
+              if (!document.cookie.includes('jwt=')) {
+                showMessage('Logout completado (la cookie ha sido eliminada)', 'success');
+                isAuthenticated = false;
+                updateAuthStatus();
+              } else {
+                showMessage('Error en el logout: ' + error.message, 'error');
+              }
+            });
+  });
+
+  // Verificar estado de autenticación al cargar la página
+  window.addEventListener('load', function() {
+    document.getElementById('testAuth').click();
+  });
+</script>
+</body>
+</html>

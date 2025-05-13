@@ -4,6 +4,7 @@ import com.cyberlog.Service.JWTService;
 import com.cyberlog.Service.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Rutas públicas que no necesitan autenticación
-        final String[] PUBLIC_PATHS = {"/login", "/register", "/logout"};
+        final String[] PUBLIC_PATHS = {"/login", "/register", "/logout", "/login-page"};  // Añadido "/login-page"
 
         String requestPath = request.getServletPath();
         boolean isPublicPath = false;
@@ -46,29 +47,47 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Extraer y validar token para rutas protegidas
-        String authHeader = request.getHeader("Authorization");
-
+        // Intentar obtener el token de las cookies primero (como lo estás utilizando en el frontend)
         String token = null;
         String email = null;
 
-        // Verificar formato del header de autorización
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwt".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
 
+        // Si no hay token en las cookies, intentar obtenerlo del header Authorization
+        if (token == null) {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+            }
+        }
+
+        // Extraer email del token
+        if (token != null) {
             try {
                 email = jwtService.extractUserEmail(token);
             } catch (Exception e) {
                 // Error en la extracción del email
+                logger.error("Error extracting email from token", e);
             }
         }
 
         // Autenticar al usuario si el token es válido
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                // Validar token
+                if (jwtService.validateToken(token)) {
+                    // Cargar los detalles del usuario
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-                if (jwtService.validateToken(token, userDetails)) {
+                    // Autenticar al usuario
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -76,6 +95,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             } catch (Exception e) {
                 // Manejo de errores
+                logger.error("Authentication error", e);
             }
         }
 
