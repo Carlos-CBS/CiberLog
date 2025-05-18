@@ -2,8 +2,11 @@ package com.cyberlog.Models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -40,7 +43,7 @@ public class Article {
     @Column(nullable = false)
     private String summary;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private int reading_time_minutes;
 
     @Column(nullable = false)
@@ -57,7 +60,7 @@ public class Article {
     @Column
     private LocalDateTime published_at;
 
-    @Column(nullable = false)
+    @Formula("(select count(*) from article_view al where al.article_id = id)")
     private int views = 0;
 
     public enum Status {
@@ -68,13 +71,13 @@ public class Article {
     @Column(nullable = false)
     private Status status = Status.draft;
 
-    @Column(nullable = false)
+    @Formula("(select count(*) from comment al where al.article_id = id)")
     private int comment_count = 0;
 
-    @Column(nullable = false)
-    private int likes_count = 0;
+    @Formula("(select count(*) from article_like al where al.article_id = id)")
+    private long likesCount;
 
-    @Column(nullable = false)
+    @Formula("(select count(*) from article_useful al where al.article_id = id)")
     private int useful_count = 0;
 
     public enum Difficulty {
@@ -84,5 +87,15 @@ public class Article {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Difficulty difficulty = Difficulty.basic;
+
+    @ManyToMany
+    @JoinTable(
+            name = "article_tag",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"article_id", "tag_id"})
+    )
+    private Set<Tag> tags = new HashSet<>();
+
 
 }

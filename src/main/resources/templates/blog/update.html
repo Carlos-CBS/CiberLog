@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Blog</title>
+    <style>
+        /* tu CSS aquí */
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Update Blog</h1>
+    <a th:href="@{/blog/list}">
+        <button type="button">Back to Blogs</button>
+    </a>
+</div>
+
+<form th:action="@{|/blog/update/${blog.id}|}" th:object="${blog}" method="post">
+    <div class="form-group">
+        <label for="title">Blog Title</label>
+        <input type="text" id="title" th:field="*{title}" required />
+    </div>
+
+    <div class="form-group">
+        <label for="slug">Slug</label>
+        <input type="text" id="slug" th:field="*{slug}" required />
+    </div>
+
+    <div class="form-group">
+        <label for="summary">Summary</label>
+        <textarea id="summary" th:field="*{summary}" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" th:field="*{status}">
+            <option value="draft">Draft</option>
+            <option value="review">Review</option>
+            <option value="published">Published</option>
+        </select>
+    </div>
+
+    <button type="submit">Update Blog</button>
+</form>
+
+<script>
+    // Opcional: sugerir slug al perder foco
+    document.getElementById('title').addEventListener('blur', function() {
+        const slugField = document.getElementById('slug');
+        const auto = this.value.toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+        if (!slugField.value || confirm('Update slug to "' + auto + '"?')) {
+            slugField.value = auto;
+        }
+    });
+</script>
+</body>
+</html>

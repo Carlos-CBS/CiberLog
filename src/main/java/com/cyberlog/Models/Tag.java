@@ -17,13 +17,17 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column
     private String description;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime created_at = LocalDateTime.now();
 
+    @PrePersist
+    protected void onCreate() {
+        created_at = LocalDateTime.now();
+    }
 }

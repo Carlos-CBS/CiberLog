@@ -33,11 +33,19 @@ public class UserService {
     public String verify(User user) {
         System.out.println("Login con: " + user.getEmail() + " / " + user.getPassword());
 
-        Authentication auth = autMan.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+        try {
+            Authentication auth = autMan.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+            );
 
-        if (auth.isAuthenticated()) {
-            return jwtService.generateToken(user.getEmail());
+            if (auth.isAuthenticated()) {
+                return jwtService.generateToken(user.getEmail()); // <--- ¡Asegúrate que esto esté bien!
+            }
+        } catch (Exception e) {
+            System.err.println("Error autenticando: " + e.getMessage());
         }
+
         return "fail";
     }
+
 }

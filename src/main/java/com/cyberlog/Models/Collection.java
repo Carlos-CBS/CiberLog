@@ -5,7 +5,13 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import lombok.*;
+
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Collection {
 
     @Id
@@ -46,7 +52,6 @@ public class Collection {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status = Status.draft;
-
 
 
 }

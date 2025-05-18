@@ -28,13 +28,13 @@ public class User {
     private String password;
 
     public enum Role {
-        admin, user, moderator
+        ROLE_ADMIN, ROLE_USER
     }
 
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role = Role.user;
+    private Role role = Role.ROLE_USER;
 
     @Column
     private String avatar;
@@ -42,7 +42,7 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String bio;
 
-    @Column
+    @Column(nullable = true)
     private String socialLinks;
 
     @Column(nullable = false)

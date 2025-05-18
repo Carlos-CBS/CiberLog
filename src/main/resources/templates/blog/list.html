@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blogs</title>
+    <style>
+        /* (idéntico a tu CSS previo) */
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>My Blogs</h1>
+    <a th:href="@{/blog/create}" class="button create-button">Create New Blog</a>
+</div>
+
+<!-- Empty state -->
+<div th:if="${#lists.isEmpty(blogs)}" class="empty-state">
+    <h2>You don't have any blogs yet</h2>
+    <p>Create your first blog to start publishing articles!</p>
+</div>
+
+<!-- Grid de blogs -->
+<div th:unless="${#lists.isEmpty(blogs)}" class="blog-grid">
+    <div th:each="blog : ${blogs}" class="blog-card">
+        <div class="blog-title">
+            <!-- título -->
+            <span th:text="${blog.title}"></span>
+            <!-- badge de estado -->
+            <span th:if="${blog.status.name() == 'draft'}" class="status-badge status-active">Draft</span>
+            <span th:if="${blog.status.name() == 'review'}" class="status-badge status-inactive">Review</span>
+            <span th:if="${blog.status.name() == 'published'}" class="status-badge status-active">Published</span>
+        </div>
+
+        <!-- resumen abreviado (100 caracteres) -->
+        <div class="blog-description"
+             th:text="${#strings.abbreviate(blog.summary, 100)}"></div>
+
+        <!-- metadata -->
+        <div class="blog-meta">
+            <div>Created: <span th:text="${#temporals.format(blog.created_at, 'dd/MM/yyyy')}"></span></div>
+            <!-- no tienes lista de artículos, así que omitimos el count -->
+        </div>
+
+        <!-- acciones -->
+        <div class="blog-actions">
+            <a th:href="@{|/blog/${blog.id}|}" class="button view-button">View</a>
+            <a th:href="@{|/blog/update/${blog.id}|}" class="button edit-button">Edit</a>
+            <form th:action="@{|/blog/delete/${blog.id}|}" method="post" style="display:inline">
+                <button type="submit"
+                        class="button delete-button"
+                        onclick="return confirm('Are you sure you want to delete this blog?')">
+                    Delete
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

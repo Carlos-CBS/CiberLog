@@ -35,12 +35,14 @@ public class SecurityConfig {
                 .csrf(customizer -> customizer.disable()) // Deshabilitar CSRF
                 .logout(logout -> logout.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login", "/register", "/login-page", "/register", "/logout", "/error", "/")
-                        .permitAll() // Permitir acceso sin autenticación
-                        .anyRequest().authenticated()) // Requiere autenticación para otras rutas
+                        .requestMatchers("/login", "/register", "/login-page", "/register", "/logout", "/error", "/","/article/home", "/article/view/**",
+                        "/css/**", "/js/**")
+                        .permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
 
                 .formLogin(form -> form
-                        .loginPage("/login") // Página de login personalizada
+                        .loginPage("/login")
                         .permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sin sesión de servidor
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Filtro JWT

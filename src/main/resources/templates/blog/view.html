@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${blog.title}">Blog View</title>
+  <style>
+    /* tu CSS aquí */
+  </style>
+</head>
+<body>
+<div class="header">
+  <h1 th:text="${blog.title}">Blog Title</h1>
+  <div>
+    <a th:href="@{|/blog/update/${blog.id}|}">Edit</a>
+    <a th:href="@{/blog/list}">Back</a>
+  </div>
+</div>
+
+<section class="blog-info">
+  <p th:text="${blog.summary}">Summary...</p>
+  <div>
+    <span>Status: <b th:text="${blog.status.name()}">draft</b></span>
+    <span>Created: <b th:text="${#temporals.format(blog.created_at, 'dd/MM/yyyy')}">--/--/----</b></span>
+    <span>Updated: <b th:text="${#temporals.format(blog.updated_at, 'dd/MM/yyyy')}">--/--/----</b></span>
+  </div>
+</section>
+
+<section class="empty-state">
+  <h1 th:text="${blog.title}">Blog Title</h1>
+
+  <div th:if="${articles.empty}">
+    <p>No articles yet.</p>
+  </div>
+
+  <div th:each="article : ${articles}">
+    <h2 th:text="${article.title}">Article Title</h2>
+    <p th:text="${article.summary}">Article summary...</p>
+    <a th:href="@{'/article/view/' + ${article.id}}">Read more</a>
+  </div>
+
+  <a th:href="@{|/article/create?collectionId=${blog.id}|}">Create your first article</a>
+</section>
+</body>
+</html>

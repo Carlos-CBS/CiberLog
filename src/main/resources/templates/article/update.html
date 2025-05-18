@@ -1,10 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Article</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css" />
+
+    <link rel="stylesheet" href="/css/createBlog.css">
+
+    <!-- Scripts externos -->
+    <script src="https://cdn.jsdelivr.net/npm/commonmark@0.30.0/dist/commonmark.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 150px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .button {
+            text-decoration: none;
+            display: inline-block;
+            background-color: #2196F3;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
+<div class="header">
+    <h1>Update Article</h1>
+    <a th:href="@{/article/list}" class="button">Back to Articles</a>
+</div>
 
+<form th:action="@{|/article/update/${article.slug}|}" th:object="${article}" method="post" id="blogForm">
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" th:field="*{title}" required />
+    </div>
+
+    <div class="form-group">
+        <label for="slug">Slug</label>
+        <input type="text" id="slug" th:field="*{slug}" />
+    </div>
+
+    <div class="form-group">
+        <label for="summary">Summary</label>
+        <textarea id="summary" th:field="*{summary}" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="markdown-editor">Contenido (Markdown):</label>
+        <textarea id="markdown-editor" th:field="*{content}" placeholder="Escribe tu blog en Markdown aquí" rows="12"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="reading_time_minutes">Reading Time (minutes)</label>
+        <input type="number" id="reading_time_minutes" th:field="*{reading_time_minutes}" min="1" required />
+    </div>
+
+    <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" th:field="*{status}">
+            <option value="draft">Draft</option>
+            <option value="review">Review</option>
+            <option value="published">Published</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="difficulty">Difficulty</label>
+        <select id="difficulty" th:field="*{difficulty}">
+            <option value="basic">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="collection">Collection</label>
+        <select id="collection" name="collection.id" required>
+            <option th:each="col : ${collections}"
+                    th:value="${col.id}"
+                    th:text="${col.title}"
+                    th:selected="${article.collection != null and article.collection.id == col.id}">
+            </option>
+        </select>
+    </div>
+
+    <label>Tags</label>
+    <div>
+        <div th:each="tag : ${allTags}">
+            <label>
+                <input type="checkbox" th:value="${tag.id}"
+                       th:field="*{tags}" />
+                <span th:text="${tag.name}">TagName</span>
+            </label>
+        </div>
+    </div>
+
+
+    <button type="submit">Update Article</button>
+</form>
+
+<script>
+    // Auto-suggest slug from title
+    document.getElementById('title').addEventListener('blur', function() {
+        const slugField = document.getElementById('slug');
+        // Only suggest if slug is empty or user confirms
+        if (!slugField.value) {
+            const auto = this.value.toLowerCase()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+            slugField.value = auto;
+        }
+    });
+</script>
+
+<script src="/js/createBlog.js" defer></script>
+<script src="/js/createBlogPlantillas.js" defer></script>
 </body>
 </html>

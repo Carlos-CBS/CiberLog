@@ -3,124 +3,456 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
+  <title>CiberLog - Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 500px;
-      margin: 0 auto;
-      padding: 20px;
+    :root {
+      --primary: #05386B;
+      --secondary: #379683;
+      --accent: #5CDB95;
+      --dark: #2C3E50;
+      --light: #EDF5E1;
+      --danger: #E74C3C;
+      --warning: #F39C12;
+      --success: #2ECC71;
+      --terminal-bg: #0a0d12;
+      --terminal-text: #5CDB95;
+      --terminal-cursor: #FFFFFF;
     }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
+
+    * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
-    button {
-      padding: 10px 15px;
-      background-color: #4CAF50;
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--dark);
+      color: var(--light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-image:
+              radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px),
+              radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+    }
+
+    .login-container {
+      display: flex;
+      width: 800px;
+      max-width: 95%;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .promo-section {
+      background-color: var(--primary);
+      color: var(--light);
+      padding: 30px;
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .promo-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .promo-description {
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .terminal-box {
+      background-color: var(--terminal-bg);
+      border-radius: 6px;
+      padding: 15px;
+      font-family: 'Courier New', monospace;
+      color: var(--terminal-text);
+      font-size: 0.85rem;
+      margin-top: auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .terminal-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+    }
+
+    .terminal-title span {
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .terminal-title .red { background-color: #FF5F56; }
+    .terminal-title .yellow { background-color: #FFBD2E; }
+    .terminal-title .green { background-color: #27C93F; }
+
+    .terminal-text {
+      line-height: 1.5;
+    }
+
+    .terminal-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background-color: var(--terminal-cursor);
+      margin-left: 2px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .form-section {
+      background-color: #fff;
+      padding: 40px;
+      width: 60%;
+      color: var(--dark);
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .form-subtitle {
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .form-group .input-with-icon {
+      position: relative;
+    }
+
+    .form-group .input-with-icon i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+
+    .form-group input[type="email"],
+    .form-group input[type="password"] {
+      width: 100%;
+      padding: 12px 12px 12px 35px;
+      border: 1px solid #e1e1e1;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 2px rgba(55, 150, 131, 0.2);
+      outline: none;
+    }
+
+    .login-btn {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
       color: white;
       border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      margin-right: 10px;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
     }
-    .actions {
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(5, 56, 107, 0.3);
+    }
+
+    .login-btn i {
+      margin-left: 8px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
       margin-top: 20px;
     }
-    #message {
+
+    .secondary-btn {
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .test-btn {
+      background-color: var(--accent);
+      color: var(--dark);
+      border: none;
+    }
+
+    .test-btn:hover {
+      background-color: #4BC085;
+      transform: translateY(-2px);
+    }
+
+    .logout-btn {
+      background-color: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .logout-btn:hover {
+      background-color: var(--danger);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .message {
       margin-top: 20px;
-      padding: 10px;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
       display: none;
     }
+
     .success {
-      background-color: #d4edda;
-      color: #155724;
+      background-color: rgba(46, 204, 113, 0.1);
+      color: var(--success);
+      border-left: 4px solid var(--success);
     }
+
     .error {
-      background-color: #f8d7da;
-      color: #721c24;
+      background-color: rgba(231, 76, 60, 0.1);
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
     }
-    .status {
-      margin-top: 20px;
-      font-weight: bold;
+
+    .auth-status {
+      margin-top: 15px;
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 6px;
+      border-radius: 20px;
     }
+
     .logged-in {
-      color: green;
+      background-color: rgba(46, 204, 113, 0.1);
+      color: var(--success);
     }
+
     .logged-out {
-      color: red;
+      background-color: rgba(231, 76, 60, 0.1);
+      color: var(--danger);
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    .register-link a {
+      color: var(--secondary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .login-container {
+        flex-direction: column;
+        width: 95%;
+      }
+
+      .promo-section {
+        width: 100%;
+        padding: 20px;
+      }
+
+      .form-section {
+        width: 100%;
+        padding: 30px 20px;
+      }
+
+      .promo-description {
+        display: none;
+      }
+
+      .terminal-box {
+        height: 120px;
+      }
     }
   </style>
 </head>
 <body>
-<h2>Login Sistema</h2>
-<form id="loginForm">
-  <div class="form-group">
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email" required />
+
+<div class="login-container">
+  <!-- Promotional Section -->
+  <div class="promo-section">
+    <div>
+      <h1 class="promo-title">CiberLog</h1>
+      <p class="promo-description">Access your cybersecurity hub for CTF challenges, threat intelligence, and expert insights.</p>
+    </div>
+
+    <div class="terminal-box">
+      <div class="terminal-title">
+        <span class="red"></span>
+        <span class="yellow"></span>
+        <span class="green"></span>
+        ~/secure-nexus
+      </div>
+      <div class="terminal-text">
+        $ sudo authenticate --user<br>
+        [*] Establishing secure connection...<br>
+        [*] Validating credentials...<span class="terminal-cursor"></span>
+      </div>
+    </div>
   </div>
 
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" required />
+  <!-- Form Section -->
+  <div class="form-section">
+    <div class="form-header">
+      <h2 class="form-title">Login</h2>
+      <p class="form-subtitle">Access your SecureNexus account</p>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-with-icon">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-with-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+      </div>
+
+      <button type="submit" class="login-btn">
+        Secure Login <i class="fas fa-shield-alt"></i>
+      </button>
+    </form>
+
+    <div id="authStatus" class="auth-status"></div>
+
+    <div class="action-buttons">
+      <button id="testAuth" class="secondary-btn test-btn">
+        <i class="fas fa-key"></i>&nbsp;Test Auth
+      </button>
+      <button id="logout" class="secondary-btn logout-btn">
+        <i class="fas fa-sign-out-alt"></i>&nbsp;Logout
+      </button>
+    </div>
+
+    <div class="register-link">
+      Don't have an account? <a href="/register">Register now</a>
+    </div>
   </div>
-
-  <button type="submit">Login</button>
-</form>
-
-<div class="actions">
-  <button id="testAuth" style="background-color: #007bff;">Test Auth</button>
-  <button id="logout" style="background-color: #dc3545;">Logout</button>
 </div>
 
-<div id="message"></div>
-<div id="authStatus" class="status"></div>
-
 <script>
-  // Estado de autenticación global
+  // Auth state management
   let isAuthenticated = false;
 
-  // Función para actualizar el indicador de estado de autenticación
+  // Update authentication status indicator
   function updateAuthStatus() {
     const statusDiv = document.getElementById('authStatus');
     if (isAuthenticated) {
-      statusDiv.textContent = "Estado: Autenticado";
-      statusDiv.className = "status logged-in";
+      statusDiv.textContent = "Status: Authenticated";
+      statusDiv.className = "auth-status logged-in";
     } else {
-      statusDiv.textContent = "Estado: No autenticado";
-      statusDiv.className = "status logged-out";
+      statusDiv.textContent = "Status: Not authenticated";
+      statusDiv.className = "auth-status logged-out";
     }
   }
 
-  // Inicializar el estado
+  // Initialize status
   updateAuthStatus();
 
-  // Función para mostrar mensajes
+  // Display messages function
   function showMessage(text, type) {
     const messageDiv = document.getElementById('message');
     messageDiv.textContent = text;
-    messageDiv.className = type;
+    messageDiv.className = `message ${type}`;
     messageDiv.style.display = 'block';
 
-    // Ocultar el mensaje después de 5 segundos
+    // Hide message after 5 seconds
     setTimeout(() => {
       messageDiv.style.display = 'none';
     }, 5000);
   }
 
-  // Login
+  // Login form submission
   document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+
+    // Show terminal activity during login attempt
+    const terminalText = document.querySelector('.terminal-text');
+    terminalText.innerHTML = '$ sudo authenticate --user<br>[*] Establishing secure connection...<br>[*] Validating credentials...';
 
     fetch('http://localhost:8080/login-page', {
       method: 'POST',
@@ -128,42 +460,57 @@
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ email, password }),
-      credentials: 'include' // Importante: incluir credenciales para recibir cookies
+      credentials: 'include' // Include credentials for cookies
     })
             .then(response => {
               console.log('Login response status:', response.status);
               if (!response.ok) {
+                terminalText.innerHTML += '<br>[✗] Authentication failed!';
                 throw new Error('Login failed with status: ' + response.status);
               }
               return response.json();
             })
             .then(data => {
               if (data.message) {
+                terminalText.innerHTML += '<br>[✓] Authentication successful!<br>[*] Granting access...';
                 showMessage('Login successful!', 'success');
-                console.log('Login exitoso, token almacenado en cookie');
+                console.log('Login successful, token stored in cookie');
                 isAuthenticated = true;
                 updateAuthStatus();
+
+                // Redirect to home after successful login (optional)
+                setTimeout(() => {
+                  window.location.href = '/article/home';
+                }, 1500);
               } else if (data.error) {
+                terminalText.innerHTML += '<br>[✗] Authentication failed!';
                 showMessage('Error: ' + data.error, 'error');
               } else {
+                terminalText.innerHTML += '<br>[✗] Unknown error occurred!';
                 showMessage('Unknown error occurred', 'error');
               }
             })
             .catch(error => {
               console.error('Error:', error);
+              terminalText.innerHTML += '<br>[✗] Connection error!';
               showMessage('Error connecting to server', 'error');
             });
   });
 
-  // Test Auth (ruta protegida)
+  // Test Auth functionality
   document.getElementById('testAuth').addEventListener('click', function () {
+    // Update terminal to show testing activity
+    const terminalText = document.querySelector('.terminal-text');
+    terminalText.innerHTML = '$ verify --token<br>[*] Checking token validity...';
+
     fetch('http://localhost:8080/test-auth', {
       method: 'GET',
-      credentials: 'include'  // Asegúrate de incluir las credenciales (cookies)
+      credentials: 'include'  // Include credentials (cookies)
     })
             .then(response => {
               console.log('Test Auth response status:', response.status);
               if (!response.ok) {
+                terminalText.innerHTML += '<br>[✗] Token invalid or expired!';
                 return response.json().then(data => {
                   isAuthenticated = false;
                   updateAuthStatus();
@@ -173,75 +520,88 @@
               return response.json();
             })
             .then(data => {
+              terminalText.innerHTML += '<br>[✓] Token valid!';
               console.log('Test Auth response:', data);
               showMessage(data.message || 'Authentication successful', 'success');
               isAuthenticated = true;
               updateAuthStatus();
             })
             .catch(error => {
-              console.error('Error en la solicitud:', error);
+              console.error('Error:', error);
               showMessage(error.message || 'Authentication failed', 'error');
               isAuthenticated = false;
               updateAuthStatus();
             });
   });
 
-  // Logout
+  // Logout functionality
   document.getElementById('logout').addEventListener('click', function () {
-    // Usamos la URL correcta para el logout
+    // Update terminal to show logout activity
+    const terminalText = document.querySelector('.terminal-text');
+    terminalText.innerHTML = '$ logout --user<br>[*] Terminating session...';
+
     fetch('http://localhost:8080/api/logout', {
       method: 'POST',
-      credentials: 'include', // Asegurarte de enviar cookies
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
-      // Añadimos un cuerpo vacío para evitar problemas con algunos servidores
       body: JSON.stringify({})
     })
             .then(response => {
               console.log('Logout response status:', response.status);
-              console.log('Logout response URL:', response.url);
 
-              // Incluso si hay un error 404, consideramos que el logout fue exitoso
-              // porque lo importante es eliminar la cookie en el cliente
+              // Handle 404 error for the logout endpoint
               if (response.status === 404) {
+                terminalText.innerHTML += '<br>[!] Backend endpoint not found<br>[✓] Removing local credentials...';
                 document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                 isAuthenticated = false;
                 updateAuthStatus();
-                showMessage('Logout exitoso (eliminada cookie en cliente)', 'success');
+                showMessage('Logout successful (client-side)', 'success');
                 return { message: 'Logged out successfully (client-side)' };
               }
 
               if (!response.ok) {
+                terminalText.innerHTML += '<br>[✗] Logout failed!';
                 throw new Error('Logout failed with status: ' + response.status);
               }
 
+              terminalText.innerHTML += '<br>[✓] Session terminated successfully!';
               return response.json();
             })
             .then(data => {
               showMessage(data.message || 'Logged out successfully', 'success');
-              console.log('Logout exitoso');
+              console.log('Logout successful');
               isAuthenticated = false;
               updateAuthStatus();
             })
             .catch(error => {
-              console.error('Error en el logout:', error);
+              console.error('Logout error:', error);
 
-              // Verificamos si la cookie JWT todavía existe
+              // Check if the JWT cookie was removed despite the error
               if (!document.cookie.includes('jwt=')) {
-                showMessage('Logout completado (la cookie ha sido eliminada)', 'success');
+                terminalText.innerHTML += '<br>[✓] Session terminated successfully!';
+                showMessage('Logout completed (cookie has been removed)', 'success');
                 isAuthenticated = false;
                 updateAuthStatus();
               } else {
-                showMessage('Error en el logout: ' + error.message, 'error');
+                terminalText.innerHTML += '<br>[✗] Logout failed!';
+                showMessage('Error during logout: ' + error.message, 'error');
               }
             });
   });
 
-  // Verificar estado de autenticación al cargar la página
+  // Check authentication status when page loads
   window.addEventListener('load', function() {
     document.getElementById('testAuth').click();
   });
+
+  // Blinking terminal cursor animation
+  setInterval(function() {
+    const cursor = document.querySelector('.terminal-cursor');
+    cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+  }, 500);
 </script>
+
 </body>
 </html>

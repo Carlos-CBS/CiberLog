@@ -32,4 +32,11 @@ public class ArticleLike {
 
     @Column(nullable = false)
     private LocalDateTime created_at = LocalDateTime.now();
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.created_at == null) {
+            this.created_at = LocalDateTime.now();
+        }
+    }
 }

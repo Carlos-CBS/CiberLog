@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>My Articles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+            gap: 20px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background: #fafafa;
+        }
+        .card h3 {
+            margin: 0 0 10px;
+            font-size: 1.2em;
+        }
+        .card p {
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .meta {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 10px;
+        }
+        .actions a {
+            margin-right: 8px;
+            text-decoration: none;
+            font-size: 0.9em;
+            color: white;
+            background: #2196F3;
+            padding: 5px 8px;
+            border-radius: 3px;
+        }
+        .actions a.delete {
+            background: #F44336;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            color: white;
+            margin-left: 5px;
+        }
+        .badge-draft    { background: #607D8B; }
+        .badge-review   { background: #FF9800; }
+        .badge-published{ background: #4CAF50; }
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 40px;
+        }
+        .tag {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-right: 4px;
+            margin-bottom: 6px;
+        }
+        .tags-container {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>My Articles</h1>
+    <a href="/article/create" style="text-decoration:none;">
+        <button type="button">Create New Article</button>
+    </a>
+</div>
+
+<div th:if="${articles.size() == 0}" class="empty">
+    <p>You have no articles yet. <a href="/article/create">Create one now!</a></p>
+</div>
+
+<div th:unless="${articles.size() == 0}" class="article-grid">
+    <div th:each="article : ${articles}" class="card">
+        <h3 th:text="${article.title}">Article Title</h3>
+        <div class="meta">
+            <span>Collection: <strong th:text="${article.collection.title}">Collection Name</strong></span><br/>
+            <span>Reading Time: <span th:text="${article.reading_time_minutes}">5</span> min</span><br/>
+            <span>Difficulty: <span th:text="${#strings.capitalize(article.difficulty.name())}">Basic</span></span><br/>
+            <span th:text="${#temporals.format(article.created_at,'dd/MM/yyyy')}">01/01/2025</span>
+            <span th:switch="${article.status}">
+                <span th:case="'draft'"    class="badge badge-draft">Draft</span>
+                <span th:case="'review'"   class="badge badge-review">Review</span>
+                <span th:case="'published'"class="badge badge-published">Published</span>
+            </span>
+        </div>
+
+        <p th:text="${#strings.abbreviate(article.summary, 120)}">Summary…</p>
+
+        <div class="tags-container">
+            <span th:if="${#lists.isEmpty(article.tags)}">No tags</span>
+            <span th:each="tag : ${article.tags}" th:text="${tag.name}" class="tag">TagName</span>
+        </div>
+
+        <div class="actions">
+            <a th:href="@{'/article/view/'  + ${article.user.name} + '/' + ${article.slug}}">View</a>
+            <a th:href="@{'/article/update/'  + ${article.user.name} + '/' + ${article.slug}}">Edit</a>
+            <form th:action="@{'/article/delete/' + ${article.user.name} + '/'  + ${article.slug}}" method="post" style="display:inline">
+                <button type="submit" class="delete" onclick="return confirm('Delete this article?')">Delete</button>
+            </form>
+
+            <form th:action="@{'/article/like/' + ${article.id}}" method="post" style="display:inline">
+                <button type="submit" style="background:#FFD54F; border:none; padding:5px 8px; border-radius:3px;">
+                    👍 Like
+                </button>
+            </form>
+            <span th:text="${article.likesCount} + ' likes'"></span>
+
+            <form th:action="@{'/article/useful/' + ${article.id}}" method="post" style="display:inline">
+                <button type="submit" style="background:#FFD54F; border:none; padding:5px 8px; border-radius:3px;">
+                    👍 Like
+                </button>
+            </form>
+            <span th:text="${article.useful_count} + ' useful'"></span>
+
+            <span>👁️ Vistas: <strong th:text="${article.views}">0</strong></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

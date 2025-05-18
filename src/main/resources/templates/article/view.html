@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${article.title}">Título</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #05386B;
+            --secondary: #379683;
+            --accent: #ADCBE3;       /* azul pastel para detalles suaves */
+            --dark: #2C3E50;         /* fondo gris azulado claro */
+            --light: #1B2A41;        /* texto principal oscuro */
+            --danger: #D9534F;
+            --warning: #F0AD4E;
+            --success: #5CB85C;
+            --terminal-bg: #1B2A41;
+            --terminal-text: #ADCBE3;
+            --terminal-cursor: #2A4D69;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.75;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 35px 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(42, 77, 105, 0.15);
+            color: var(--light);
+        }
+
+        /* Headers */
+        h2 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2.5rem;
+            border-left: 5px solid var(--secondary);
+            padding-left: 18px;
+            margin-bottom: 25px;
+            letter-spacing: 0.05em;
+        }
+
+        /* Article summary */
+        .article-summary {
+            font-size: 1.15rem;
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-style: italic;
+            background-color: var(--accent);
+            padding: 20px 22px;
+            border-radius: 12px;
+            border-left: 5px solid var(--secondary);
+        }
+
+        /* Article content */
+        .article-content {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: var(--light);
+            line-height: 1.85;
+        }
+
+        .comments-section {
+            max-width: 700px;  /* O el ancho que quieras para el área */
+            margin: 0 auto;
+            padding: 1rem;
+            font-family: Arial, sans-serif;
+        }
+
+        .comments-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .comment-item {
+            background: #e8f0fe;
+            border-radius: 18px;
+            padding: 22px 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 3px 16px rgba(42, 77, 105, 0.12);
+            transition: box-shadow 0.3s ease;
+            overflow: hidden; /* Esto evita que algo se salga */
+            position: relative;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .comment-item:hover {
+            box-shadow: 0 10px 30px rgba(42, 77, 105, 0.3);
+        }
+
+        .comment-actions form {
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .comment-form {
+            margin-top: 1rem;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            resize: vertical;
+            padding: 8px;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .comment-form button {
+            margin-top: 8px;
+            padding: 8px 16px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .comment-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .report-form {
+            margin-top: 0.5rem;
+        }
+
+        .report-form input[type="text"] {
+            width: calc(100% - 100px);
+            padding: 5px;
+            font-size: 0.9rem;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .report-form button {
+            padding: 5px 10px;
+            margin-left: 5px;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .report-form button:hover {
+            background-color: #b02a37;
+        }
+
+        /* Form inputs */
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1.05rem;
+            border: 2px solid var(--secondary);
+            border-radius: 14px;
+            background: #f7faff;
+            color: var(--primary);
+            margin-bottom: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        textarea:focus, input[type="text"]:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 12px var(--secondary);
+            background: white;
+        }
+
+        /* Buttons */
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            user-select: none;
+            text-transform: uppercase;
+            box-shadow: 0 6px 18px rgba(42, 77, 105, 0.3);
+        }
+
+        button:hover {
+            background: var(--secondary);
+            box-shadow: 0 8px 25px rgba(42, 77, 105, 0.45);
+            transform: translateY(-2px);
+        }
+
+        /* Comment author and date */
+        .comment-author {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+
+        .comment-date {
+            font-size: 0.85rem;
+            color: var(--secondary);
+        }
+        .comment-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        /* Actions buttons - versión compacta */
+        .action-btn {
+            background-color: #d9e6fb;
+            color: var(--primary);
+            padding: 6px 14px;          /* menos padding para tamaño compacto */
+            border-radius: 12px;        /* más redondeado pero pequeño */
+            font-weight: 600;
+            font-size: 0.85rem;         /* más pequeño */
+            cursor: pointer;
+            border: none;
+            margin-right: 8px;
+            box-shadow: 0 2px 8px rgba(42, 77, 105, 0.15);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;                   /* espacio entre icono y texto */
+            user-select: none;
+            text-transform: none;
+        }
+
+        .action-btn i {
+            font-size: 1rem;            /* icono un poco más grande que el texto */
+        }
+
+        /* Hover */
+        .action-btn:hover {
+            background-color: var(--secondary);
+            color: white;
+            box-shadow: 0 5px 15px rgba(42, 77, 105, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Specific colors */
+        .delete-btn {
+            background-color: #fce4e4;
+            color: var(--danger);
+        }
+
+        .delete-btn:hover {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .like-btn {
+            background-color: #dff3de;
+            color: var(--success);
+        }
+
+        .like-btn:hover {
+            background-color: var(--success);
+            color: white;
+        }
+
+        /* Ajuste para el botón "Útil" (que usa .action-btn sin clase extra) */
+        .action-btn:not(.delete-btn):not(.like-btn) {
+            background-color: #f0f4ff;
+            color: var(--primary);
+        }
+
+        .action-btn:not(.delete-btn):not(.like-btn):hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+
+        /* Terminal */
+        .terminal-box {
+            background-color: var(--terminal-bg);
+            color: var(--terminal-text);
+            font-family: 'Courier New', Courier, monospace;
+            padding: 26px;
+            border-radius: 18px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+            margin-bottom: 40px;
+            white-space: pre-wrap;
+            position: relative;
+            font-size: 1rem;
+        }
+
+        .terminal-box::after {
+            content: "";
+            display: inline-block;
+            width: 12px;
+            height: 20px;
+            background-color: var(--terminal-cursor);
+            position: absolute;
+            bottom: 26px;
+            left: 26px;
+            animation: blink 1.2s steps(2, start) infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Estilos corregidos para el sistema de respuestas */
+        /* Contenedor de respuestas */
+        .replies-container {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #cce0ff;
+        }
+
+        /* Título de respuestas */
+        .replies-title {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Lista de respuestas */
+        .replies-list {
+            list-style: none;
+            padding-left: 20px;
+            border-left: 3px solid var(--secondary);
+            margin: 15px 0;
+        }
+
+        /* Elemento de respuesta */
+        .reply-item {
+            background: #d0e6ff;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(42, 77, 105, 0.08);
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Formulario de respuesta */
+        .reply-form {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #cce0ff;
+        }
+
+        .reply-form textarea {
+            background-color: #f0f7ff;
+        }
+
+        .reply-form button {
+            font-size: 0.9rem;
+            padding: 10px 20px;
+        }
+
+        /* Animación suave para nuevas respuestas */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reply-item {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+<div th:insert="fragments/navbar :: navbar"></div>
+
+
+<div class="main-container">
+    <div class="article-header">
+        <h2 th:text="${article.title}">Article Title</h2>
+
+        <div class="article-meta">
+            <span><i class="fas fa-calendar-alt"></i> <span th:text="${#temporals.format(article.created_at, 'dd MMM yyyy')}">18 May 2025</span></span>
+            <span><i class="fas fa-user-shield"></i> <span th:text="${article.user.name}">CyberDefender</span></span>
+        </div>
+    </div>
+
+    <div class="article-summary" th:text="${article.summary}">
+        Article summary with key points and overview of the content. This provides readers with a quick understanding of what they'll learn.
+    </div>
+
+    <div class="article-content" th:utext="${article.content}">
+        <p>Content of the article goes here. This is where the main cybersecurity information will be presented to readers.</p>
+
+        <div class="terminal-box">
+            <div class="terminal-title">
+                <span class="red"></span>
+                <span class="yellow"></span>
+                <span class="green"></span>
+                ~/exploit-demo
+            </div>
+            <div class="terminal-text">
+                $ sudo nmap -sS -sV -p- 192.168.1.1<br>
+                [*] Starting Nmap scan...<br>
+                [*] Open ports detected: 22, 80, 443<br>
+                [*] Service detection running...
+            </div>
+        </div>
+
+        <p>More content explaining the techniques and findings presented in the terminal output above.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3 class="comments-title"><i class="fas fa-comments"></i> Comentarios</h3>
+
+        <div class="comment-form">
+            <form th:action="@{/comment/add}" method="post">
+                <input type="hidden" name="articleId" th:value="${article.id}" />
+                <textarea name="content" placeholder="Comparte tu opinión sobre este artículo..." rows="4" required></textarea>
+                <button type="submit" aria-label="Enviar comentario">
+                    <i class="fas fa-paper-plane"></i> Enviar Comentario
+                </button>
+            </form>
+        </div>
+
+        <ul class="comments-list">
+            <li th:each="comment : ${comments}" class="comment-item">
+                <!-- Información del comentario principal -->
+                <div class="comment-header">
+                    <div class="comment-author">
+                        <i class="fas fa-user-circle"></i>
+                        <span th:text="${comment.user.name}">Autor</span>
+                    </div>
+                    <div class="comment-date">
+                        <i class="far fa-clock"></i>
+                        <span th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy HH:mm')}">18 May 2025</span>
+                    </div>
+                </div>
+
+                <div class="comment-content" th:text="${comment.content}">
+                    Contenido del comentario aquí.
+                </div>
+
+                <div class="comment-actions">
+                    <form th:if="${#authentication.getName() == comment.user.email}"
+                          th:action="@{/comment/delete}" method="post">
+                        <button type="submit" class="action-btn delete-btn" aria-label="Eliminar comentario">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                        <input type="hidden" name="commentId" th:value="${comment.id}" />
+                    </form>
+
+                    <form th:action="@{/comment/like}" method="post">
+                        <button type="submit" class="action-btn like-btn" aria-label="Like comentario">
+                            <i class="fas fa-thumbs-up"></i><span th:text="${comment.commentLike}">0</span>
+                        </button>
+                        <input type="hidden" name="commentId" th:value="${comment.id}" />
+                    </form>
+
+                    <form th:action="@{/comment/useful}" method="post">
+                        <button type="submit" class="action-btn" aria-label="Useful comentario">
+                            <i class="fas fa-star"></i><span th:text="${comment.commentUseful}">0</span>
+                        </button>
+                        <input type="hidden" name="commentId" th:value="${comment.id}" />
+                    </form>
+                </div>
+
+                <div class="report-form">
+                    <form th:action="@{/comment/report}" method="post">
+                        <input type="text" name="reportReason" placeholder="Motivo del reporte" />
+                        <button type="submit" class="action-btn report-btn" aria-label="Reportar comentario">
+                            <i class="fas fa-exclamation-triangle"></i> Reportar
+                        </button>
+                        <input type="hidden" name="commentId" th:value="${comment.id}" />
+                    </form>
+                </div>
+
+                <!-- Sección de respuestas -->
+                <div class="replies-container" th:if="${not #lists.isEmpty(comment.replies)}">
+                    <div class="replies-title">
+                        <i class="fas fa-reply-all"></i> Respuestas (<span th:text="${#lists.size(comment.replies)}">0</span>)
+                    </div>
+
+                    <ul class="replies-list">
+                        <li th:each="reply : ${comment.replies}" class="reply-item">
+                            <div class="comment-header">
+                                <div class="comment-author">
+                                    <i class="fas fa-reply"></i>
+                                    <span th:text="${reply.user.name}">Receptor</span>
+                                </div>
+                                <div class="comment-date">
+                                    <i class="far fa-clock"></i>
+                                    <span th:text="${#temporals.format(reply.createdAt, 'dd MMM yyyy HH:mm')}">18 May 2025</span>
+                                </div>
+                            </div>
+
+                            <div class="comment-content" th:text="${reply.content}">
+                                Contenido de la respuesta aquí.
+                            </div>
+
+                            <div class="comment-actions" th:if="${#authentication.getName() == reply.user.email}">
+                                <form th:action="@{/comment/delete}" method="post">
+                                    <button type="submit" class="action-btn delete-btn" aria-label="Eliminar respuesta">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </button>
+                                    <input type="hidden" name="commentId" th:value="${reply.id}" />
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Formulario para responder al comentario -->
+                <div class="reply-form">
+                    <form th:action="@{/comment/add}" method="post" class="comment-form">
+                        <input type="hidden" name="articleId" th:value="${article.id}" />
+                        <input type="hidden" name="parentId" th:value="${comment.id}" />
+                        <textarea name="content" placeholder="Responder a este comentario..." rows="2" required></textarea>
+                        <button type="submit" aria-label="Responder comentario">
+                            <i class="fas fa-reply"></i> Responder
+                        </button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

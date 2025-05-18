@@ -1,4 +1,4 @@
-package com.cyberlog.Controllers;
+package com.cyberlog.Controllers.User;
 
 import com.cyberlog.Models.User;
 import com.cyberlog.Service.JWTService;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-public class UserController {
+public class AuthController {
 
     @Autowired
     private UserService service;
@@ -29,7 +29,6 @@ public class UserController {
         return "auth/login";  // Esto buscará login.html en src/main/resources/templates/
     }
 
-    // Endpoint API para el login (usado por JavaScript)
     @PostMapping("/login-page")
     @ResponseBody
     public ResponseEntity<?> login(@RequestBody User user, HttpServletResponse response) {
@@ -53,6 +52,15 @@ public class UserController {
         responseMap.put("message", "Login successful");
         return ResponseEntity.ok(responseMap);
     }
+    public boolean isValidUsername(String username) {
+        return username != null && username.matches("[a-zA-Z0-9_-]+");
+    }
+    public String normalizeUsername(String input) {
+        if (input == null) return null;
+        return input.trim()
+                .toLowerCase()
+                .replaceAll("[^a-z0-9_-]", ""); // sólo letras, números, guiones y guion bajo
+    }
 
     @GetMapping("/register")
     public String showRegisterPage() {
@@ -63,34 +71,31 @@ public class UserController {
     public ResponseEntity<?> registerUser(
             @RequestParam String name,
             @RequestParam String email,
-            @RequestParam String password) {
+            @RequestParam String bio,
+            @RequestParam String password,
+            @RequestParam(required = false) String socialLinks) {
 
         User user = new User();
-        user.setName(name);
+        String normalizedName = normalizeUsername(name);
+        if (!isValidUsername(normalizedName)) {
+            throw new RuntimeException("Nombre de usuario inválido");
+        }
+        user.setName(normalizedName);
         user.setEmail(email);
+        user.setBio(bio);
         user.setPassword(password);
 
+        if (socialLinks != null && !socialLinks.isBlank()) {
+            user.setSocialLinks(socialLinks.trim());
+        }
         User registeredUser = service.register(user);
 
-        // Preparar la respuesta
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Usuario registrado correctamente");
         response.put("user", registeredUser);
 
         return ResponseEntity.ok(response);
     }
-
-
-
-//    @PostMapping("/register")
-//    @ResponseBody
-//    public ResponseEntity<?> register(@RequestBody User user) {
-//        User registeredUser = service.register(user);
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("message", "User registered successfully");
-//        response.put("user", registeredUser);
-//        return ResponseEntity.ok(response);
-//    }
 
     @GetMapping("/test-auth")
     @ResponseBody
@@ -107,7 +112,6 @@ public class UserController {
             }
         }
 
-        // Si no se encuentra el token
         if (token == null) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "No authentication token found");
@@ -129,17 +133,14 @@ public class UserController {
     @PostMapping("/api/logout")
     @ResponseBody
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        System.out.println("Logout request received");  // Log para verificar que la ruta está siendo llamada
 
-        // Crear una cookie con el mismo nombre pero sin valor y expiración inmediata
         Cookie cookie = new Cookie("jwt", "");
         cookie.setHttpOnly(true);
-        cookie.setSecure(false); // Si usas HTTPS, ponlo como true
-        cookie.setPath("/"); // Asegura que la cookie sea válida para todo el sitio
-        cookie.setMaxAge(0); // Eliminar la cookie inmediatamente
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
         response.addCookie(cookie);
 
-        // Responder con un mensaje de éxito
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("message", "Logged out successfully");
         return ResponseEntity.ok(responseMap);

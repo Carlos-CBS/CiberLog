@@ -26,9 +26,12 @@ public class ArticleUseful {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(nullable = false, name = "user_id")
-    private UUID userId;
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "user_id")
+    private User user;
 
-    @Column(nullable = false, name = "article_id")
-    private UUID articleId;
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "article_id")
+    private Article article;
+
 }

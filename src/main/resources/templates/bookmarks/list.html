@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mis Bookmarks</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+<h1>Mis Bookmarks</h1>
+
+<div th:if="${#lists.isEmpty(bookmarks)}">
+    <p>No tienes bookmarks guardados.</p>
+</div>
+
+<table th:if="${!#lists.isEmpty(bookmarks)}" border="1" cellpadding="10" cellspacing="0">
+    <thead>
+    <tr>
+        <th>Título del Artículo</th>
+        <th>Fecha de guardado</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="bookmark : ${bookmarks}">
+        <td>
+            <a th:href="@{/article/view/{name}/{slug}(name=${bookmark.article.user.name}, slug=${bookmark.article.slug})}"
+               th:text="${bookmark.article.title}">Artículo</a>
+        </td>
+        <td th:text="${#temporals.format(bookmark.created_at, 'dd/MM/yyyy HH:mm')}">Fecha</td>
+        <td>
+            <form th:action="@{/bookmarks/delete/{articleId}(articleId=${bookmark.article.id})}" method="post" style="display:inline;">
+                <button type="submit">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a href="/">Volver al inicio</a></p>
+</body>
+</html>

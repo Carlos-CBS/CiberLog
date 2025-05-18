@@ -1,0 +1,28 @@
+<nav class="navbar" th:fragment="navbar">
+    <div class="navbar-container">
+        <a href="#" class="navbar-brand">
+            <i class="fas fa-shield-alt navbar-logo"></i>
+            <span class="navbar-logo">CiberLog</span>
+        </a>
+        <ul class="navbar-menu">
+            <li class="navbar-item"><a href="#" class="navbar-link active">Inicio</a></li>
+            <li class="navbar-item"><a href="#" class="navbar-link">Artículos</a></li>
+            <li class="navbar-item"><a href="#" class="navbar-link">Foro</a></li>
+            <li class="navbar-item"><a href="#" class="navbar-link">Contacto</a></li>
+        </ul>
+        <div class="navbar-user">
+            <div class="user-avatar">AB</div>
+            <div class="user-dropdown">
+                <button class="user-dropdown-btn">
+                    Usuario <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="user-dropdown-menu">
+                    <a href="#" class="user-dropdown-item"><i class="fas fa-user"></i> Perfil</a>
+                    <a href="#" class="user-dropdown-item"><i class="fas fa-cog"></i> Configuración</a>
+                    <div class="user-dropdown-divider"></div>
+                    <a href="#" class="user-dropdown-item"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

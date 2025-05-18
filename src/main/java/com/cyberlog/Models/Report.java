@@ -26,10 +26,6 @@ public class Report {
     private Comment comment;
 
     @ManyToOne
-    @JoinColumn(name = "reported_user_id")
-    private User reportedUser;
-
-    @ManyToOne
     @JoinColumn(name = "article_id")
     private Article article;
 
@@ -48,7 +44,7 @@ public class Report {
     private Status status = Status.pending;
 
     public enum ReportType {
-        article, comment, user
+        article, comment
     }
 
     @Enumerated(EnumType.STRING)
@@ -65,9 +61,6 @@ public class Report {
                 break;
             case comment:
                 if (this.comment == null) throw new IllegalArgumentException("Comment must be specified for report type 'comment'");
-                break;
-            case user:
-                if (this.reportedUser == null) throw new IllegalArgumentException("User must be specified for report type 'user'");
                 break;
         }
     }

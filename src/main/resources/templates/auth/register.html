@@ -3,108 +3,586 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro de Usuario</title>
+  <title>Ciberlog - Join Our Cybersecurity Community</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #05386B;
+      --secondary: #379683;
+      --accent: #5CDB95;
+      --dark: #2C3E50;
+      --light: #EDF5E1;
+      --danger: #E74C3C;
+      --warning: #F39C12;
+      --success: #2ECC71;
+      --terminal-bg: #0a0d12;
+      --terminal-text: #5CDB95;
+      --terminal-cursor: #FFFFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f7f6;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--dark);
+      color: var(--light);
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
+      background-image:
+              radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px),
+              radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
     }
-    .form-container {
+
+    .register-container {
+      display: flex;
+      width: 900px;
+      max-width: 95%;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .promo-section {
+      background-color: var(--primary);
+      color: var(--light);
+      padding: 30px;
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .promo-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .promo-description {
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .feature-list {
+      list-style-type: none;
+      margin-top: 20px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
+
+    .feature-list li i {
+      color: var(--accent);
+      margin-right: 10px;
+    }
+
+    .terminal-box {
+      background-color: var(--terminal-bg);
+      border-radius: 6px;
+      padding: 15px;
+      font-family: 'Courier New', monospace;
+      color: var(--terminal-text);
+      font-size: 0.85rem;
+      margin-top: auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .terminal-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+    }
+
+    .terminal-title span {
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .terminal-title .red { background-color: #FF5F56; }
+    .terminal-title .yellow { background-color: #FFBD2E; }
+    .terminal-title .green { background-color: #27C93F; }
+
+    .terminal-text {
+      line-height: 1.5;
+    }
+
+    .terminal-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background-color: var(--terminal-cursor);
+      margin-left: 2px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .form-section {
       background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-      width: 400px;
-      max-width: 100%;
+      padding: 40px;
+      width: 60%;
+      color: var(--dark);
     }
-    h2 {
+
+    .form-header {
       text-align: center;
-      color: #333;
+      margin-bottom: 25px;
     }
-    label {
+
+    .form-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .form-subtitle {
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group label {
       display: block;
-      margin: 10px 0 5px;
-      color: #555;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--dark);
     }
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    textarea,
-    select {
+
+    .form-group .input-with-icon {
+      position: relative;
+    }
+
+    .form-group .input-with-icon i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group textarea,
+    .form-group select {
       width: 100%;
-      padding: 10px;
-      margin: 5px 0 15px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-sizing: border-box;
+      padding: 12px 12px 12px 35px;
+      border: 1px solid #e1e1e1;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
     }
-    input[type="submit"] {
-      background-color: #007BFF;
+
+    .form-group textarea {
+      padding-left: 12px;
+      resize: none;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 2px rgba(55, 150, 131, 0.2);
+      outline: none;
+    }
+
+    .password-strength {
+      height: 6px;
+      margin-top: 8px;
+      border-radius: 3px;
+      background-color: #e1e1e1;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0;
+      background-color: var(--danger);
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    .password-feedback {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      margin-top: 5px;
+    }
+
+    .password-feedback-text {
+      color: #888;
+    }
+
+    .password-requirements {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    .requirement {
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+    }
+
+    .requirement i {
+      font-size: 0.7rem;
+      margin-right: 5px;
+    }
+
+    .requirement.valid {
+      color: var(--success);
+    }
+
+    .form-action {
+      margin-top: 30px;
+    }
+
+    .register-btn {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
       color: white;
       border: none;
-      padding: 10px;
       width: 100%;
-      border-radius: 4px;
+      padding: 14px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    input[type="submit"]:hover {
-      background-color: #0056b3;
+
+    .register-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(5, 56, 107, 0.3);
     }
-    .error {
-      color: red;
-      font-size: 0.9em;
+
+    .register-btn i {
+      margin-left: 8px;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    .login-link a {
+      color: var(--secondary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      background-color: rgba(231, 76, 60, 0.1);
+      color: var(--danger);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--danger);
+      display: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .register-container {
+        flex-direction: column;
+        width: 95%;
+      }
+
+      .promo-section {
+        width: 100%;
+        padding: 20px;
+      }
+
+      .form-section {
+        width: 100%;
+        padding: 30px 20px;
+      }
+
+      .promo-description, .feature-list {
+        display: none;
+      }
+
+      .terminal-box {
+        height: 120px;
+      }
     }
   </style>
 </head>
 <body>
 
-<div class="form-container">
-  <h2>Registrarse</h2>
-  <form id="register-form" action="/register" method="POST">
-    <label for="name">Nombre</label>
-    <input type="text" id="name" name="name" required>
+<div class="register-container">
+  <!-- Promotional Section -->
+  <div class="promo-section">
+    <div>
+      <h1 class="promo-title">CiberLog</h1>
+      <p class="promo-description">Join our elite cybersecurity community and advance your knowledge through hands-on CTF challenges, latest threat intelligence, and industry insights.</p>
 
-    <label for="email">Correo electrónico</label>
-    <input type="email" id="email" name="email" required>
+      <ul class="feature-list">
+        <li><i class="fas fa-shield-alt"></i> Exclusive CTF challenges & writeups</li>
+        <li><i class="fas fa-newspaper"></i> Latest cybersecurity news & analysis</li>
+        <li><i class="fas fa-users"></i> Connect with security professionals</li>
+        <li><i class="fas fa-graduation-cap"></i> Advanced tutorials & training resources</li>
+      </ul>
+    </div>
 
-    <label for="password">Contraseña</label>
-    <input type="password" id="password" name="password" required>
+    <div class="terminal-box">
+      <div class="terminal-title">
+        <span class="red"></span>
+        <span class="yellow"></span>
+        <span class="green"></span>
+        ~/secure-nexus
+      </div>
+      <div class="terminal-text">
+        $ sudo access --community<br>
+        [*] Initializing secure connection...<br>
+        [+] Access granted. Welcome to SecureNexus!<span class="terminal-cursor"></span>
+      </div>
+    </div>
+  </div>
 
-    <label for="confirm-password">Confirmar Contraseña</label>
-    <input type="password" id="confirm-password" name="confirm-password" required>
+  <!-- Form Section -->
+  <div class="form-section">
+    <div class="form-header">
+      <h2 class="form-title">Create Account</h2>
+      <p class="form-subtitle">Join our community of security professionals and enthusiasts</p>
+    </div>
 
-    <label for="avatar">Avatar (URL)</label>
-    <input type="text" id="avatar" name="avatar">
+    <div id="error-message" class="error-message"></div>
 
-    <label for="bio">Bio (opcional)</label>
-    <textarea id="bio" name="bio" rows="4"></textarea>
+    <form id="register-form" action="/register" method="POST">
+      <div class="form-group">
+        <label for="name">Username</label>
+        <div class="input-with-icon">
+          <i class="fas fa-user"></i>
+          <input type="text" id="name" name="name" placeholder="Choose a unique username" required>
+        </div>
+      </div>
 
-    <input type="submit" value="Registrar">
-  </form>
-  <div id="error-message" class="error" style="display:none;"></div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-with-icon">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-with-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+        </div>
+
+        <div class="password-strength">
+          <div id="password-strength-bar" class="password-strength-bar"></div>
+        </div>
+
+        <div class="password-feedback">
+          <span id="password-strength-text" class="password-feedback-text">Password strength</span>
+          <span id="password-length" class="password-feedback-text">0/12</span>
+        </div>
+
+        <div class="password-requirements">
+          <div id="req-length" class="requirement">
+            <i class="fas fa-circle"></i> At least 12 characters
+          </div>
+          <div id="req-uppercase" class="requirement">
+            <i class="fas fa-circle"></i> At least 1 uppercase letter
+          </div>
+          <div id="req-lowercase" class="requirement">
+            <i class="fas fa-circle"></i> At least 1 lowercase letter
+          </div>
+          <div id="req-number" class="requirement">
+            <i class="fas fa-circle"></i> At least 1 number
+          </div>
+          <div id="req-special" class="requirement">
+            <i class="fas fa-circle"></i> At least 1 special character
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password</label>
+        <div class="input-with-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="bio">Bio (optional)</label>
+        <textarea id="bio" name="bio" rows="3" placeholder="Tell us about your background in cybersecurity..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="socialLinks">Social Links (optional)</label>
+        <textarea id="socialLinks" name="socialLinks" rows="2" placeholder="https://github.com/username, https://twitter.com/username..."></textarea>
+      </div>
+
+      <div class="form-action">
+        <button type="submit" class="register-btn">
+          Create Secure Account <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="/login">Log in</a>
+    </div>
+  </div>
 </div>
 
 <script>
+  // Username validation
+  document.getElementById('name').addEventListener('input', function() {
+    this.value = this.value.replace(/\s/g, ''); // Remove spaces while typing
+  });
+
+  // Password strength checker
+  const passwordInput = document.getElementById('password');
+  const strengthBar = document.getElementById('password-strength-bar');
+  const strengthText = document.getElementById('password-strength-text');
+  const lengthText = document.getElementById('password-length');
+
+  // Requirements elements
+  const reqLength = document.getElementById('req-length');
+  const reqUppercase = document.getElementById('req-uppercase');
+  const reqLowercase = document.getElementById('req-lowercase');
+  const reqNumber = document.getElementById('req-number');
+  const reqSpecial = document.getElementById('req-special');
+
+  passwordInput.addEventListener('input', function() {
+    const password = this.value;
+    const length = password.length;
+
+    // Update length counter
+    lengthText.textContent = `${length}/12`;
+
+    // Check requirements
+    const hasLength = length >= 12;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+
+    // Update requirement indicators
+    updateRequirement(reqLength, hasLength);
+    updateRequirement(reqUppercase, hasUppercase);
+    updateRequirement(reqLowercase, hasLowercase);
+    updateRequirement(reqNumber, hasNumber);
+    updateRequirement(reqSpecial, hasSpecial);
+
+    // Calculate strength score (0-4)
+    let score = 0;
+    if (length >= 8) score++;
+    if (length >= 12) score++;
+    if (hasUppercase && hasLowercase) score++;
+    if (hasNumber) score++;
+    if (hasSpecial) score++;
+
+    // Update strength bar
+    const percent = (score / 5) * 100;
+    strengthBar.style.width = `${percent}%`;
+
+    // Update strength color and text
+    if (score === 0) {
+      strengthBar.style.backgroundColor = '#e1e1e1';
+      strengthText.textContent = 'Password strength';
+    } else if (score <= 2) {
+      strengthBar.style.backgroundColor = '#E74C3C'; // Weak - Red
+      strengthText.textContent = 'Weak';
+    } else if (score === 3) {
+      strengthBar.style.backgroundColor = '#F39C12'; // Medium - Orange
+      strengthText.textContent = 'Medium';
+    } else if (score === 4) {
+      strengthBar.style.backgroundColor = '#F1C40F'; // Good - Yellow
+      strengthText.textContent = 'Good';
+    } else {
+      strengthBar.style.backgroundColor = '#2ECC71'; // Strong - Green
+      strengthText.textContent = 'Strong';
+    }
+  });
+
+  function updateRequirement(element, isValid) {
+    if (isValid) {
+      element.classList.add('valid');
+      element.querySelector('i').className = 'fas fa-check-circle';
+    } else {
+      element.classList.remove('valid');
+      element.querySelector('i').className = 'fas fa-circle';
+    }
+  }
+
+  // Form submission
   document.getElementById('register-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    var password = document.getElementById('password').value;
-    var confirmPassword = document.getElementById('confirm-password').value;
+    const name = document.getElementById('name').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const errorMessage = document.getElementById('error-message');
 
-    if (password !== confirmPassword) {
-      document.getElementById('error-message').innerText = "Las contraseñas no coinciden.";
-      document.getElementById('error-message').style.display = "block";
+    // Username validation
+    const nameRegex = /^[a-zA-Z0-9_-]+$/;
+    if (!nameRegex.test(name)) {
+      errorMessage.innerText = "Username cannot contain spaces or special characters (only letters, numbers, underscore, and hyphen are allowed).";
+      errorMessage.style.display = "block";
       return;
     }
 
-    // Si la validación es correcta, envíalo
+    // Password match validation
+    if (password !== confirmPassword) {
+      errorMessage.innerText = "Passwords do not match.";
+      errorMessage.style.display = "block";
+      return;
+    }
+
+    // If validation passes, submit the form
     this.submit();
   });
+
+  // Blinking terminal cursor animation
+  setInterval(function() {
+    const cursor = document.querySelector('.terminal-cursor');
+    cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+  }, 500);
 </script>
 
 </body>

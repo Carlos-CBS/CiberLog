@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h2>Listado de tags</h2>
+    <ul>
+        <li th:each="tag : ${tags}">
+            <strong th:text="${tag.name}">
+                Nombre del tag:
+            </strong>
+            <span th:text="${tag.description}">
+                Descripcion
+            </span>
+            <form th:action="@{/tag/delete}" method="post">
+                <input type="hidden" name="id" th:value="${tag.id}" />
+                <button type="submit">Eliminar</button>
+            </form>
+        </li>
+    </ul>
+
+    <form th:action="@{/tag/create}" method="post">
+        <label>Nombre: </label>
+        <input type="text" name="name" required>
+        <label>Descripción</label>
+        <input type="text" name="description">
+
+        <button type="submit">Guardar</button>
+    </form>
+
+</body>
+</html>

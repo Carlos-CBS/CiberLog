@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin - Reportes</title>
+</head>
+<body>
+<h1>Reportes pendientes y resueltos</h1>
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+    <tr>
+        <th>ID Reporte</th>
+        <th>Tipo</th>
+        <th>Contenido reportado</th>
+        <th>Reportado por</th>
+        <th>Estado</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="report : ${reports}">
+        <td th:text="${report.id}"></td>
+        <td th:text="${report.reportType}"></td>
+        <td>
+            <span th:if="${report.reportType.name() == 'comment'}" th:text="${report.comment.content}"></span>
+            <span th:if="${report.reportType.name() == 'article'}" th:text="${report.article.title}"></span>
+        </td>
+        <td th:text="${report.user.name}"></td>
+        <td th:text="${report.status}"></td>
+        <td th:text="${#temporals.format(report.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+        <td>
+            <form th:if="${report.reportType.name() == 'comment'}" method="post" th:action="@{/admin/reports/delete-comment}">
+                <input type="hidden" name="commentId" th:value="${report.comment.id}" />
+                <input type="hidden" name="reportId" th:value="${report.id}" />
+                <button type="submit">Eliminar comentario</button>
+            </form>
+
+            <form th:if="${report.reportType.name() == 'article'}" method="post" th:action="@{/admin/reports/delete-article}">
+                <input type="hidden" name="articleId" th:value="${report.article.id}" />
+                <input type="hidden" name="reportId" th:value="${report.id}" />
+                <button type="submit">Eliminar artículo</button>
+            </form>
+
+            <form method="post" th:action="@{/admin/reports/dismiss}">
+                <input type="hidden" name="reportId" th:value="${report.id}" />
+                <button type="submit">Dismiss</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br/>
+<a href="/admin/deleted-records">Ver historial de eliminados</a>
+</body>
+</html>

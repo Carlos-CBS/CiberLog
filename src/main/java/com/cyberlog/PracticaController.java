@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class BlogController {
+public class PracticaController {
 
     @GetMapping("/create-blog")
     public String showCreateBlogPage() {
