@@ -307,7 +307,7 @@
       text-decoration: underline;
     }
 
-    .error-message {
+    .error {
       background-color: rgba(231, 76, 60, 0.1);
       color: var(--danger);
       padding: 10px;
@@ -315,7 +315,6 @@
       font-size: 0.9rem;
       margin-bottom: 15px;
       border-left: 4px solid var(--danger);
-      display: none;
     }
 
     /* Responsive Design */
@@ -348,17 +347,17 @@
 <body>
 
 <div class="register-container">
-  <!-- Promotional Section -->
+  <!-- Sección Promocional -->
   <div class="promo-section">
     <div>
       <h1 class="promo-title">CiberLog</h1>
-      <p class="promo-description">Join our elite cybersecurity community and advance your knowledge through hands-on CTF challenges, latest threat intelligence, and industry insights.</p>
+      <p class="promo-description">Únete a nuestra comunidad élite de ciberseguridad y mejora tus conocimientos a través de retos prácticos CTF, la última inteligencia de amenazas y análisis del sector.</p>
 
       <ul class="feature-list">
-        <li><i class="fas fa-shield-alt"></i> Exclusive CTF challenges & writeups</li>
-        <li><i class="fas fa-newspaper"></i> Latest cybersecurity news & analysis</li>
-        <li><i class="fas fa-users"></i> Connect with security professionals</li>
-        <li><i class="fas fa-graduation-cap"></i> Advanced tutorials & training resources</li>
+        <li><i class="fas fa-shield-alt"></i> Retos exclusivos de CTF y sus explicaciones</li>
+        <li><i class="fas fa-newspaper"></i> Noticias y análisis recientes de ciberseguridad</li>
+        <li><i class="fas fa-users"></i> Conéctate con profesionales de seguridad</li>
+        <li><i class="fas fa-graduation-cap"></i> Tutoriales avanzados y recursos de formación</li>
       </ul>
     </div>
 
@@ -367,47 +366,50 @@
         <span class="red"></span>
         <span class="yellow"></span>
         <span class="green"></span>
-        ~/secure-nexus
+        ~/Ciber-Log
       </div>
       <div class="terminal-text">
         $ sudo access --community<br>
         [*] Initializing secure connection...<br>
-        [+] Access granted. Welcome to SecureNexus!<span class="terminal-cursor"></span>
+        [+] Access granted. Welcome to CiberLog!<span class="terminal-cursor"></span>
       </div>
     </div>
   </div>
 
-  <!-- Form Section -->
+  <!-- Sección de Formulario -->
   <div class="form-section">
     <div class="form-header">
-      <h2 class="form-title">Create Account</h2>
-      <p class="form-subtitle">Join our community of security professionals and enthusiasts</p>
+      <h2 class="form-title">Crear Cuenta</h2>
+      <p class="form-subtitle">Únete a nuestra comunidad de profesionales y entusiastas de la seguridad</p>
     </div>
 
     <div id="error-message" class="error-message"></div>
+    <div th:if="${errorMessage != null}" class="error">
+      <p th:text="${errorMessage}">Mensaje de error aquí</p>
+    </div>
 
     <form id="register-form" action="/register" method="POST">
       <div class="form-group">
-        <label for="name">Username</label>
+        <label for="name">Nombre de usuario</label>
         <div class="input-with-icon">
           <i class="fas fa-user"></i>
-          <input type="text" id="name" name="name" placeholder="Choose a unique username" required>
+          <input type="text" id="name" name="name" placeholder="Elige un nombre de usuario único" required>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="email">Email Address</label>
+        <label for="email">Correo electrónico</label>
         <div class="input-with-icon">
           <i class="fas fa-envelope"></i>
-          <input type="email" id="email" name="email" placeholder="your@email.com" required>
+          <input type="email" id="email" name="email" placeholder="tu@correo.com" required>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">Contraseña</label>
         <div class="input-with-icon">
           <i class="fas fa-lock"></i>
-          <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+          <input type="password" id="password" name="password" placeholder="Crea una contraseña segura" required>
         </div>
 
         <div class="password-strength">
@@ -415,73 +417,70 @@
         </div>
 
         <div class="password-feedback">
-          <span id="password-strength-text" class="password-feedback-text">Password strength</span>
+          <span id="password-strength-text" class="password-feedback-text">Fortaleza de la contraseña</span>
           <span id="password-length" class="password-feedback-text">0/12</span>
         </div>
 
         <div class="password-requirements">
           <div id="req-length" class="requirement">
-            <i class="fas fa-circle"></i> At least 12 characters
+            <i class="fas fa-circle"></i> Al menos 12 caracteres
           </div>
           <div id="req-uppercase" class="requirement">
-            <i class="fas fa-circle"></i> At least 1 uppercase letter
+            <i class="fas fa-circle"></i> Al menos 1 letra mayúscula
           </div>
           <div id="req-lowercase" class="requirement">
-            <i class="fas fa-circle"></i> At least 1 lowercase letter
+            <i class="fas fa-circle"></i> Al menos 1 letra minúscula
           </div>
           <div id="req-number" class="requirement">
-            <i class="fas fa-circle"></i> At least 1 number
+            <i class="fas fa-circle"></i> Al menos 1 número
           </div>
           <div id="req-special" class="requirement">
-            <i class="fas fa-circle"></i> At least 1 special character
+            <i class="fas fa-circle"></i> Al menos 1 caracter especial
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="confirm-password">Confirm Password</label>
+        <label for="confirm-password">Confirmar contraseña</label>
         <div class="input-with-icon">
           <i class="fas fa-lock"></i>
-          <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+          <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirma tu contraseña" required>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="bio">Bio (optional)</label>
-        <textarea id="bio" name="bio" rows="3" placeholder="Tell us about your background in cybersecurity..."></textarea>
+        <label for="bio">Biografía (opcional)</label>
+        <textarea id="bio" name="bio" rows="3" placeholder="Cuéntanos sobre tu experiencia en ciberseguridad..."></textarea>
       </div>
 
       <div class="form-group">
-        <label for="socialLinks">Social Links (optional)</label>
-        <textarea id="socialLinks" name="socialLinks" rows="2" placeholder="https://github.com/username, https://twitter.com/username..."></textarea>
+        <label for="socialLinks">Redes sociales (opcional)</label>
+        <textarea id="socialLinks" name="socialLinks" rows="2" placeholder="https://github.com/usuario, https://twitter.com/usuario..."></textarea>
       </div>
 
       <div class="form-action">
         <button type="submit" class="register-btn">
-          Create Secure Account <i class="fas fa-arrow-right"></i>
+          Crear Cuenta Segura <i class="fas fa-arrow-right"></i>
         </button>
       </div>
     </form>
 
     <div class="login-link">
-      Already have an account? <a href="/login">Log in</a>
+      ¿Ya tienes cuenta? <a href="/login">Iniciar sesión</a>
     </div>
   </div>
 </div>
 
 <script>
-  // Username validation
   document.getElementById('name').addEventListener('input', function() {
     this.value = this.value.replace(/\s/g, ''); // Remove spaces while typing
   });
 
-  // Password strength checker
   const passwordInput = document.getElementById('password');
   const strengthBar = document.getElementById('password-strength-bar');
   const strengthText = document.getElementById('password-strength-text');
   const lengthText = document.getElementById('password-length');
 
-  // Requirements elements
   const reqLength = document.getElementById('req-length');
   const reqUppercase = document.getElementById('req-uppercase');
   const reqLowercase = document.getElementById('req-lowercase');
@@ -492,24 +491,21 @@
     const password = this.value;
     const length = password.length;
 
-    // Update length counter
+    // actualizar counter
     lengthText.textContent = `${length}/12`;
 
-    // Check requirements
     const hasLength = length >= 12;
     const hasUppercase = /[A-Z]/.test(password);
     const hasLowercase = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
     const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
 
-    // Update requirement indicators
     updateRequirement(reqLength, hasLength);
     updateRequirement(reqUppercase, hasUppercase);
     updateRequirement(reqLowercase, hasLowercase);
     updateRequirement(reqNumber, hasNumber);
     updateRequirement(reqSpecial, hasSpecial);
 
-    // Calculate strength score (0-4)
     let score = 0;
     if (length >= 8) score++;
     if (length >= 12) score++;
@@ -517,26 +513,24 @@
     if (hasNumber) score++;
     if (hasSpecial) score++;
 
-    // Update strength bar
     const percent = (score / 5) * 100;
     strengthBar.style.width = `${percent}%`;
 
-    // Update strength color and text
     if (score === 0) {
       strengthBar.style.backgroundColor = '#e1e1e1';
       strengthText.textContent = 'Password strength';
     } else if (score <= 2) {
-      strengthBar.style.backgroundColor = '#E74C3C'; // Weak - Red
-      strengthText.textContent = 'Weak';
+      strengthBar.style.backgroundColor = '#E74C3C';
+      strengthText.textContent = 'Débil';
     } else if (score === 3) {
-      strengthBar.style.backgroundColor = '#F39C12'; // Medium - Orange
-      strengthText.textContent = 'Medium';
+      strengthBar.style.backgroundColor = '#F39C12';
+      strengthText.textContent = 'Mediana';
     } else if (score === 4) {
-      strengthBar.style.backgroundColor = '#F1C40F'; // Good - Yellow
-      strengthText.textContent = 'Good';
+      strengthBar.style.backgroundColor = '#F1C40F';
+      strengthText.textContent = 'Buena';
     } else {
-      strengthBar.style.backgroundColor = '#2ECC71'; // Strong - Green
-      strengthText.textContent = 'Strong';
+      strengthBar.style.backgroundColor = '#2ECC71';
+      strengthText.textContent = 'Fuerte';
     }
   });
 
@@ -550,7 +544,6 @@
     }
   }
 
-  // Form submission
   document.getElementById('register-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -559,7 +552,6 @@
     const confirmPassword = document.getElementById('confirm-password').value;
     const errorMessage = document.getElementById('error-message');
 
-    // Username validation
     const nameRegex = /^[a-zA-Z0-9_-]+$/;
     if (!nameRegex.test(name)) {
       errorMessage.innerText = "Username cannot contain spaces or special characters (only letters, numbers, underscore, and hyphen are allowed).";
@@ -567,23 +559,16 @@
       return;
     }
 
-    // Password match validation
     if (password !== confirmPassword) {
       errorMessage.innerText = "Passwords do not match.";
       errorMessage.style.display = "block";
       return;
     }
 
-    // If validation passes, submit the form
     this.submit();
   });
-
-  // Blinking terminal cursor animation
-  setInterval(function() {
-    const cursor = document.querySelector('.terminal-cursor');
-    cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
-  }, 500);
 </script>
 
 </body>
+
 </html>

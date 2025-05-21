@@ -341,11 +341,11 @@
 <body>
 
 <div class="login-container">
-  <!-- Promotional Section -->
+  <!-- Sección Promocional -->
   <div class="promo-section">
     <div>
       <h1 class="promo-title">CiberLog</h1>
-      <p class="promo-description">Access your cybersecurity hub for CTF challenges, threat intelligence, and expert insights.</p>
+      <p class="promo-description">Accede a tu centro de ciberseguridad para desafíos CTF, inteligencia de amenazas y conocimientos de expertos.</p>
     </div>
 
     <div class="terminal-box">
@@ -353,7 +353,7 @@
         <span class="red"></span>
         <span class="yellow"></span>
         <span class="green"></span>
-        ~/secure-nexus
+        ~/Ciber-Log
       </div>
       <div class="terminal-text">
         $ sudo authenticate --user<br>
@@ -363,34 +363,34 @@
     </div>
   </div>
 
-  <!-- Form Section -->
+  <!-- Sección del formulario -->
   <div class="form-section">
     <div class="form-header">
-      <h2 class="form-title">Login</h2>
-      <p class="form-subtitle">Access your SecureNexus account</p>
+      <h2 class="form-title">Iniciar sesión</h2>
+      <p class="form-subtitle">Accede a tu cuenta de SecureNexus</p>
     </div>
 
     <div id="message" class="message"></div>
 
     <form id="loginForm">
       <div class="form-group">
-        <label for="email">Email Address</label>
+        <label for="email">Correo electrónico</label>
         <div class="input-with-icon">
           <i class="fas fa-envelope"></i>
-          <input type="email" id="email" name="email" placeholder="your@email.com" required>
+          <input type="email" id="email" name="email" placeholder="tu@correo.com" required>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">Contraseña</label>
         <div class="input-with-icon">
           <i class="fas fa-lock"></i>
-          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
         </div>
       </div>
 
       <button type="submit" class="login-btn">
-        Secure Login <i class="fas fa-shield-alt"></i>
+        Inicio seguro <i class="fas fa-shield-alt"></i>
       </button>
     </form>
 
@@ -398,59 +398,51 @@
 
     <div class="action-buttons">
       <button id="testAuth" class="secondary-btn test-btn">
-        <i class="fas fa-key"></i>&nbsp;Test Auth
+        <i class="fas fa-key"></i>&nbsp;Probar autenticación
       </button>
       <button id="logout" class="secondary-btn logout-btn">
-        <i class="fas fa-sign-out-alt"></i>&nbsp;Logout
+        <i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesión
       </button>
     </div>
 
     <div class="register-link">
-      Don't have an account? <a href="/register">Register now</a>
+      ¿No tienes una cuenta? <a href="/register">Regístrate ahora</a>
     </div>
   </div>
 </div>
 
 <script>
-  // Auth state management
+
   let isAuthenticated = false;
 
-  // Update authentication status indicator
   function updateAuthStatus() {
     const statusDiv = document.getElementById('authStatus');
     if (isAuthenticated) {
-      statusDiv.textContent = "Status: Authenticated";
+      statusDiv.textContent = "Estado: Autenticado";
       statusDiv.className = "auth-status logged-in";
     } else {
-      statusDiv.textContent = "Status: Not authenticated";
+      statusDiv.textContent = "Estado: No autenticado";
       statusDiv.className = "auth-status logged-out";
     }
   }
 
-  // Initialize status
-  updateAuthStatus();
-
-  // Display messages function
   function showMessage(text, type) {
     const messageDiv = document.getElementById('message');
     messageDiv.textContent = text;
     messageDiv.className = `message ${type}`;
     messageDiv.style.display = 'block';
 
-    // Hide message after 5 seconds
     setTimeout(() => {
       messageDiv.style.display = 'none';
     }, 5000);
   }
 
-  // Login form submission
   document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    // Show terminal activity during login attempt
     const terminalText = document.querySelector('.terminal-text');
     terminalText.innerHTML = '$ sudo authenticate --user<br>[*] Establishing secure connection...<br>[*] Validating credentials...';
 
@@ -460,25 +452,24 @@
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ email, password }),
-      credentials: 'include' // Include credentials for cookies
+      credentials: 'include'
     })
             .then(response => {
-              console.log('Login response status:', response.status);
+              console.log('Estado de respuesta de inicio de sesión:', response.status);
               if (!response.ok) {
                 terminalText.innerHTML += '<br>[✗] Authentication failed!';
-                throw new Error('Login failed with status: ' + response.status);
+                throw new Error('Error de inicio de sesión con estado: ' + response.status);
               }
               return response.json();
             })
             .then(data => {
               if (data.message) {
                 terminalText.innerHTML += '<br>[✓] Authentication successful!<br>[*] Granting access...';
-                showMessage('Login successful!', 'success');
-                console.log('Login successful, token stored in cookie');
+                showMessage('Inicio de sesión exitoso!', 'success');
+                console.log('Inicio de sesión exitoso, token almacenado en cookie');
                 isAuthenticated = true;
                 updateAuthStatus();
 
-                // Redirect to home after successful login (optional)
                 setTimeout(() => {
                   window.location.href = '/article/home';
                 }, 1500);
@@ -487,56 +478,54 @@
                 showMessage('Error: ' + data.error, 'error');
               } else {
                 terminalText.innerHTML += '<br>[✗] Unknown error occurred!';
-                showMessage('Unknown error occurred', 'error');
+                showMessage('Ocurrió un error desconocido', 'error');
               }
             })
             .catch(error => {
               console.error('Error:', error);
               terminalText.innerHTML += '<br>[✗] Connection error!';
-              showMessage('Error connecting to server', 'error');
+              showMessage('Error al conectar con el servidor', 'error');
             });
   });
 
-  // Test Auth functionality
   document.getElementById('testAuth').addEventListener('click', function () {
-    // Update terminal to show testing activity
+
     const terminalText = document.querySelector('.terminal-text');
     terminalText.innerHTML = '$ verify --token<br>[*] Checking token validity...';
 
     fetch('http://localhost:8080/test-auth', {
       method: 'GET',
-      credentials: 'include'  // Include credentials (cookies)
+      credentials: 'include'
     })
             .then(response => {
-              console.log('Test Auth response status:', response.status);
+              console.log('Estado de respuesta de prueba de autenticación:', response.status);
               if (!response.ok) {
                 terminalText.innerHTML += '<br>[✗] Token invalid or expired!';
                 return response.json().then(data => {
                   isAuthenticated = false;
                   updateAuthStatus();
-                  throw new Error(data.error || 'Authentication failed');
+                  throw new Error(data.error || 'Autenticación fallida');
                 });
               }
               return response.json();
             })
             .then(data => {
               terminalText.innerHTML += '<br>[✓] Token valid!';
-              console.log('Test Auth response:', data);
-              showMessage(data.message || 'Authentication successful', 'success');
+              console.log('Respuesta de prueba de autenticación:', data);
+              showMessage(data.message || 'Autenticación exitosa', 'success');
               isAuthenticated = true;
               updateAuthStatus();
             })
             .catch(error => {
-              console.error('Error:', error);
-              showMessage(error.message || 'Authentication failed', 'error');
+              showMessage('Autenticación fallida', 'error');
+              terminalText.innerHTML += '<br>[✗] Token invalid or expired!';
               isAuthenticated = false;
               updateAuthStatus();
             });
   });
 
-  // Logout functionality
   document.getElementById('logout').addEventListener('click', function () {
-    // Update terminal to show logout activity
+
     const terminalText = document.querySelector('.terminal-text');
     terminalText.innerHTML = '$ logout --user<br>[*] Terminating session...';
 
@@ -549,58 +538,34 @@
       body: JSON.stringify({})
     })
             .then(response => {
-              console.log('Logout response status:', response.status);
-
-              // Handle 404 error for the logout endpoint
-              if (response.status === 404) {
-                terminalText.innerHTML += '<br>[!] Backend endpoint not found<br>[✓] Removing local credentials...';
-                document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                isAuthenticated = false;
-                updateAuthStatus();
-                showMessage('Logout successful (client-side)', 'success');
-                return { message: 'Logged out successfully (client-side)' };
-              }
-
-              if (!response.ok) {
-                terminalText.innerHTML += '<br>[✗] Logout failed!';
-                throw new Error('Logout failed with status: ' + response.status);
-              }
+              console.log('Estado de respuesta de cierre de sesión:', response.status);
 
               terminalText.innerHTML += '<br>[✓] Session terminated successfully!';
               return response.json();
             })
+
             .then(data => {
-              showMessage(data.message || 'Logged out successfully', 'success');
-              console.log('Logout successful');
+              showMessage(data.message || 'Sesión cerrada exitosamente', 'success');
+              console.log('Cierre de sesión exitoso');
               isAuthenticated = false;
               updateAuthStatus();
             })
             .catch(error => {
-              console.error('Logout error:', error);
+              console.error('Error al cerrar sesión:', error);
 
-              // Check if the JWT cookie was removed despite the error
               if (!document.cookie.includes('jwt=')) {
                 terminalText.innerHTML += '<br>[✓] Session terminated successfully!';
-                showMessage('Logout completed (cookie has been removed)', 'success');
+                showMessage('Cierre de sesión completado (cookie eliminada)', 'success');
                 isAuthenticated = false;
                 updateAuthStatus();
               } else {
                 terminalText.innerHTML += '<br>[✗] Logout failed!';
-                showMessage('Error during logout: ' + error.message, 'error');
+                showMessage('Error durante el cierre de sesión: ' + error.message, 'error');
               }
             });
   });
 
-  // Check authentication status when page loads
-  window.addEventListener('load', function() {
-    document.getElementById('testAuth').click();
-  });
 
-  // Blinking terminal cursor animation
-  setInterval(function() {
-    const cursor = document.querySelector('.terminal-cursor');
-    cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
-  }, 500);
 </script>
 
 </body>

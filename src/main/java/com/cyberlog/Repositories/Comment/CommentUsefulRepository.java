@@ -13,4 +13,6 @@ public interface CommentUsefulRepository extends JpaRepository<CommentUseful, UU
     Iterable<? extends CommentUseful> findByComment(Comment comment);
 
     void deleteByCommentIn(List<Comment> comments);
+
+    void deleteByUser(User user);
 }

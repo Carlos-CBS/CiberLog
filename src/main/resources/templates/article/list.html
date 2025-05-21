@@ -2,146 +2,434 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Articles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <script src="/js/navbar.js" defer></script>
+    <link rel="stylesheet" href="/css/footer.css">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
+        :root {
+            --primary: #05386B;
+            --secondary: #379683;
+            --accent: #5CDB95;
+            --dark: #2C3E50;
+            --light: #EDF5E1;
+            --danger: #E74C3C;
+            --warning: #F39C12;
+            --success: #2ECC71;
         }
-        .header {
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            margin: 0;
+            padding: 0;
+            background-image:
+                    radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px),
+                    radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--secondary);
         }
+
+        .page-title {
+            color: var(--accent);
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .create-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .create-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 56, 107, 0.3);
+        }
+
         .article-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 20px;
+            margin-top: 20px;
         }
-        .card {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            background: #fafafa;
-        }
-        .card h3 {
-            margin: 0 0 10px;
-            font-size: 1.2em;
-        }
-        .card p {
-            color: #555;
-            margin-bottom: 10px;
-        }
-        .meta {
-            font-size: 0.9em;
-            color: #777;
-            margin-bottom: 10px;
-        }
-        .actions a {
-            margin-right: 8px;
-            text-decoration: none;
-            font-size: 0.9em;
-            color: white;
-            background: #2196F3;
-            padding: 5px 8px;
-            border-radius: 3px;
-        }
-        .actions a.delete {
-            background: #F44336;
-        }
-        .badge {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 0.8em;
-            color: white;
-            margin-left: 5px;
-        }
-        .badge-draft    { background: #607D8B; }
-        .badge-review   { background: #FF9800; }
-        .badge-published{ background: #4CAF50; }
-        .empty {
+
+        .empty-state {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 60px 30px;
             text-align: center;
-            color: #777;
-            padding: 40px;
+            margin-top: 40px;
         }
-        .tag {
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .empty-state h3 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+
+        .empty-state p {
+            color: var(--light);
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+
+        .empty-state .create-link {
             display: inline-block;
-            background: #2196F3;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
             color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 0.8em;
-            margin-right: 4px;
-            margin-bottom: 6px;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
+
+        .empty-state .create-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 56, 107, 0.3);
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            background-color: var(--primary);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+
+        .status-draft {
+            background-color: var(--dark);
+            color: white;
+        }
+
+        .status-review {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .status-published {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex: 1;
+            color: var(--dark);
+        }
+
+        .card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .meta-item i {
+            color: var(--secondary);
+        }
+
+        .meta-collection {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .card-summary {
+            margin-bottom: 15px;
+            color: #444;
+            line-height: 1.5;
+            height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
         .tags-container {
-            margin-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            background-color: rgba(5, 56, 107, 0.1);
+            color: var(--primary);
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .card-actions {
+            padding: 15px 20px;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view {
+            background-color: var(--secondary);
+        }
+
+        .btn-edit {
+            background-color: var(--primary);
+        }
+
+        .btn-delete {
+            background-color: var(--danger);
+        }
+
+        .btn-like {
+            background-color: #FFD54F;
+            color: var(--dark);
+        }
+
+        .btn-useful {
+            background-color: #81C784;
+            color: var(--dark);
+        }
+
+        .action-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                margin: 10px auto;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .article-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-actions {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
 <body>
-<div class="header">
-    <h1>My Articles</h1>
-    <a href="/article/create" style="text-decoration:none;">
-        <button type="button">Create New Article</button>
-    </a>
-</div>
 
-<div th:if="${articles.size() == 0}" class="empty">
-    <p>You have no articles yet. <a href="/article/create">Create one now!</a></p>
-</div>
+<div th:insert="fragments/navbar :: navbar"></div>
 
-<div th:unless="${articles.size() == 0}" class="article-grid">
-    <div th:each="article : ${articles}" class="card">
-        <h3 th:text="${article.title}">Article Title</h3>
-        <div class="meta">
-            <span>Collection: <strong th:text="${article.collection.title}">Collection Name</strong></span><br/>
-            <span>Reading Time: <span th:text="${article.reading_time_minutes}">5</span> min</span><br/>
-            <span>Difficulty: <span th:text="${#strings.capitalize(article.difficulty.name())}">Basic</span></span><br/>
-            <span th:text="${#temporals.format(article.created_at,'dd/MM/yyyy')}">01/01/2025</span>
-            <span th:switch="${article.status}">
-                <span th:case="'draft'"    class="badge badge-draft">Draft</span>
-                <span th:case="'review'"   class="badge badge-review">Review</span>
-                <span th:case="'published'"class="badge badge-published">Published</span>
-            </span>
-        </div>
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Mis Artículos</h1>
+        <a href="/article/create" class="create-btn">
+            <i class="fas fa-plus"></i> Crear Nuevo Artículo
+        </a>
+    </div>
 
-        <p th:text="${#strings.abbreviate(article.summary, 120)}">Summary…</p>
+    <div th:if="${articles.size() == 0}" class="empty-state">
+        <i class="fas fa-newspaper"></i>
+        <h3>No hay Artículos Aún</h3>
+        <p>No has creado ningún artículo. ¡Comienza a compartir tu conocimiento!</p>
+        <a href="/article/create" class="create-link">
+            <i class="fas fa-plus"></i> Crea Tu Primer Artículo
+        </a>
+    </div>
 
-        <div class="tags-container">
-            <span th:if="${#lists.isEmpty(article.tags)}">No tags</span>
-            <span th:each="tag : ${article.tags}" th:text="${tag.name}" class="tag">TagName</span>
-        </div>
+    <div th:unless="${articles.size() == 0}" class="article-grid">
+        <div th:each="article : ${articles}" class="card">
+            <div class="card-header">
+                <h3 class="card-title" th:text="${article.title}">Título del Artículo</h3>
+                <span th:switch="${article.status}" class="card-status">
+                    <span th:case="'draft'" class="status-draft">Borrador</span>
+                    <span th:case="'review'" class="status-review">En Revisión</span>
+                    <span th:case="'published'" class="status-published">Publicado</span>
+                </span>
+            </div>
 
-        <div class="actions">
-            <a th:href="@{'/article/view/'  + ${article.user.name} + '/' + ${article.slug}}">View</a>
-            <a th:href="@{'/article/update/'  + ${article.user.name} + '/' + ${article.slug}}">Edit</a>
-            <form th:action="@{'/article/delete/' + ${article.user.name} + '/'  + ${article.slug}}" method="post" style="display:inline">
-                <button type="submit" class="delete" onclick="return confirm('Delete this article?')">Delete</button>
-            </form>
+            <div class="card-body">
+                <div class="card-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-folder"></i>
+                        <span class="meta-collection" th:text="${article.collection.title}">Nombre de la Colección</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span th:text="${article.reading_time_minutes} + ' min de lectura'">5 min de lectura</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span th:text="${#strings.capitalize(article.difficulty.name())}">Básico</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span th:text="${#temporals.format(article.created_at,'dd/MM/yyyy')}">01/01/2025</span>
+                    </div>
+                </div>
 
-            <form th:action="@{'/article/like/' + ${article.id}}" method="post" style="display:inline">
-                <button type="submit" style="background:#FFD54F; border:none; padding:5px 8px; border-radius:3px;">
-                    👍 Like
-                </button>
-            </form>
-            <span th:text="${article.likesCount} + ' likes'"></span>
+                <p class="card-summary" th:text="${#strings.abbreviate(article.summary, 120)}">El resumen del artículo va aquí. Es una breve descripción del contenido del artículo.</p>
 
-            <form th:action="@{'/article/useful/' + ${article.id}}" method="post" style="display:inline">
-                <button type="submit" style="background:#FFD54F; border:none; padding:5px 8px; border-radius:3px;">
-                    👍 Like
-                </button>
-            </form>
-            <span th:text="${article.useful_count} + ' useful'"></span>
+                <div class="tags-container">
+                    <span th:if="${#lists.isEmpty(article.tags)}" class="tag">Sin etiquetas</span>
+                    <span th:each="tag : ${article.tags}" th:text="${tag.name}" class="tag">NombreEtiqueta</span>
+                </div>
+            </div>
 
-            <span>👁️ Vistas: <strong th:text="${article.views}">0</strong></span>
+            <div class="card-actions">
+                <div class="action-buttons">
+                    <a th:href="@{'/article/view/' + ${article.user.name} + '/' + ${article.slug}}" class="action-btn btn-view">
+                        <i class="fas fa-eye"></i> Ver
+                    </a>
+                    <a th:href="@{'/article/update/' + ${article.user.name} + '/' + ${article.slug}}" class="action-btn btn-edit">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <form th:action="@{'/article/delete/' + ${article.user.name} + '/' + ${article.slug}}" method="post" style="display:inline">
+                        <button type="submit" class="action-btn btn-delete">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </form>
+                </div>
+
+                <div style="font-size: 1.3rem; color: #0a0d12; float: right;">
+                    <i style="margin-left: 20px" class="fas fa-thumbs-up"></i> <span th:text="${article.likesCount}">0</span>
+                    <i style="margin-left: 20px" class="fas fa-eye"></i> <span th:text="${article.views}">0</span>
+                    <i style="margin-left: 20px"  class="fas fa-lightbulb"></i> <span th:text="${article.useful_count}">0</span>
+                </div>
+
+                <div class="stat-item">
+                    <i class="fas fa-eye"></i>
+                    <span th:text="${article.views}">0</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<div th:insert="fragments/footer :: footer"></div>
+
 </body>
 </html>

@@ -1,34 +1,285 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Tags</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/navbar.js" defer></script>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        :root {
+            --primary: #05386B;
+            --secondary: #379683;
+            --accent: #5CDB95;
+            --dark: #2C3E50;
+            --light: #EDF5E1;
+            --danger: #E74C3C;
+            --warning: #F39C12;
+            --success: #2ECC71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            margin: 0;
+            padding: 0;
+            background-image:
+                    radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px),
+                    radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .page-title {
+            color: var(--accent);
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .tag-list {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .tag-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tag-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 56, 107, 0.3);
+        }
+
+        .tag-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .tag-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .tag-description {
+            color: var(--light);
+            opacity: 0.8;
+        }
+
+        .tag-action {
+            display: flex;
+        }
+
+        .btn-delete {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .tag-form {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .form-title {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--secondary);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(92, 219, 149, 0.2);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 56, 107, 0.3);
+        }
+
+        .empty-state {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 60px 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .empty-state h3 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+
+        .empty-state p {
+            color: var(--light);
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                margin: 10px auto;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .tag-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tag-action {
+                margin-top: 10px;
+                width: 100%;
+            }
+
+            .btn-delete {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>Listado de tags</h2>
-    <ul>
-        <li th:each="tag : ${tags}">
-            <strong th:text="${tag.name}">
-                Nombre del tag:
-            </strong>
-            <span th:text="${tag.description}">
-                Descripcion
-            </span>
-            <form th:action="@{/tag/delete}" method="post">
-                <input type="hidden" name="id" th:value="${tag.id}" />
-                <button type="submit">Eliminar</button>
-            </form>
-        </li>
-    </ul>
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Administración de Tags</h1>
+    </div>
 
-    <form th:action="@{/tag/create}" method="post">
-        <label>Nombre: </label>
-        <input type="text" name="name" required>
-        <label>Descripción</label>
-        <input type="text" name="description">
+    <div th:if="${tags.size() == 0}" class="empty-state">
+        <i class="fas fa-tags"></i>
+        <h3>No hay tags registrados</h3>
+        <p>No se encontraron tags en el sistema. ¡Crea el primer tag!</p>
+    </div>
 
-        <button type="submit">Guardar</button>
-    </form>
+    <div th:unless="${tags.size() == 0}" class="tag-list">
+        <div th:each="tag : ${tags}" class="tag-item">
+            <div class="tag-info">
+                <span class="tag-name" th:text="${tag.name}">Nombre del tag</span>
+                <span class="tag-description" th:text="${tag.description}">Descripción del tag</span>
+            </div>
+            <div class="tag-action">
+                <form th:action="@{/tag/delete}" method="post">
+                    <input type="hidden" name="id" th:value="${tag.id}" />
+                    <button type="submit" class="btn-delete">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <div class="tag-form">
+        <h2 class="form-title">Crear Nuevo Tag</h2>
+        <form th:action="@{/tag/create}" method="post">
+            <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Descripción:</label>
+                <input type="text" id="description" name="description">
+            </div>
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+        </form>
+    </div>
+</div>
 </body>
 </html>

@@ -8,13 +8,20 @@ import com.cyberlog.Repositories.Comment.CommentRepository;
 import com.cyberlog.Repositories.Comment.CommentUsefulRepository;
 import com.cyberlog.Repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.cyberlog.Controllers.User.UserController.md5Hex;
+
 @Controller
 public class CommentController {
 
@@ -56,7 +63,6 @@ public class CommentController {
                 .commentLike(0)
                 .commentUseful(0);
 
-        // Si se pasa un parentCommentId, se añade como respuesta
         if (parentCommentId != null) {
             Optional<Comment> parent = commentRepository.findById(parentCommentId);
             parent.ifPresent(commentBuilder::parentComment);
@@ -115,11 +121,11 @@ public class CommentController {
         Optional<CommentLike> existingLike = commentLikeRepository.findByUserAndComment(user, comment);
 
         if (existingLike.isPresent()) {
-            // Ya tiene like, entonces lo quitamos (toggle off)
+
             commentLikeRepository.delete(existingLike.get());
             comment.setCommentLike(comment.getCommentLike() - 1);
         } else {
-            // No tiene like, lo agregamos (toggle on)
+
             CommentLike cl = CommentLike.builder().user(user).comment(comment).build();
             commentLikeRepository.save(cl);
             comment.setCommentLike(comment.getCommentLike() + 1);
@@ -139,11 +145,10 @@ public class CommentController {
         Optional<CommentUseful> existingUseful = commentUsefulRepository.findByUserAndComment(user, comment);
 
         if (existingUseful.isPresent()) {
-            // Ya está marcado como útil, lo quitamos
             commentUsefulRepository.delete(existingUseful.get());
             comment.setCommentUseful(comment.getCommentUseful() - 1);
         } else {
-            // No está marcado, lo agregamos
+
             CommentUseful cu = CommentUseful.builder().user(user).comment(comment).build();
             commentUsefulRepository.save(cu);
             comment.setCommentUseful(comment.getCommentUseful() + 1);
@@ -153,5 +158,30 @@ public class CommentController {
 
         return "redirect:/article/view/" + comment.getArticle().getUser().getName() + "/" + comment.getArticle().getSlug();
     }
+    @GetMapping("/general/faqs")
+    public String faqs(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepo.findUserByEmail(auth.getName());
 
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
+        model.addAttribute("user", user);
+        return "/faqs";
+    }
+
+    @GetMapping("/general/consejos")
+    public String consejos(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepo.findUserByEmail(auth.getName());
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
+        model.addAttribute("user", user);
+        return "/general/consejos";
+    }
 }
+
+

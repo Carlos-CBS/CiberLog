@@ -28,8 +28,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Rutas públicas que no necesitan autenticación
-        final String[] PUBLIC_PATHS = {"/login", "/register", "/logout", "/login-page"};  // Añadido "/login-page"
+
+        final String[] PUBLIC_PATHS = {"/login", "/register", "/logout", "/login-page"};
 
         String requestPath = request.getServletPath();
         boolean isPublicPath = false;
@@ -42,12 +42,11 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         if (isPublicPath) {
-            // Si es una ruta pública, continúa sin verificar autenticación
+
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Intentar obtener el token de las cookies primero (como lo estás utilizando en el frontend)
         String token = null;
         String email = null;
 
@@ -69,20 +68,16 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
-        // Extraer email del token
         if (token != null) {
             try {
                 email = jwtService.extractUserEmail(token);
             } catch (Exception e) {
-                // Error en la extracción del email
                 logger.error("Error extracting email from token", e);
             }
         }
 
-        // Autenticar al usuario si el token es válido
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
-                // Validar token
                 if (jwtService.validateToken(token)) {
                     // Cargar los detalles del usuario
                     UserDetails userDetails = userDetailsService.loadUserByUsername(email);
@@ -94,7 +89,6 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             } catch (Exception e) {
-                // Manejo de errores
                 logger.error("Authentication error", e);
             }
         }

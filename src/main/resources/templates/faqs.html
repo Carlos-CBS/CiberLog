@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CiberLog - Frequently Asked Questions</title>
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <style>
+    :root {
+      --primary: #05386b;
+      --secondary: #379683;
+      --accent: #5cdb95;
+      --dark: #2c3e50;
+      --light: #edf5e1;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --success: #2ecc71;
+      --terminal-bg: #0a0d12;
+      --terminal-text: #5cdb95;
+      --terminal-cursor: #ffffff;
+      --card-bg: #fff;
+      --card-border: rgba(5, 56, 107, 0.1);
+      --card-shadow: rgba(5, 56, 107, 0.2);
+      --card-hover-shadow: rgba(5, 56, 107, 0.3);
+      --text-muted: #6c757d;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--dark);
+      color: var(--light);
+      background-image: radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px),
+      radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .terminal-banner {
+      background-color: var(--terminal-bg);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .terminal-content {
+      flex-grow: 1;
+    }
+
+    .terminal-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      font-family: "Courier New", monospace;
+      color: var(--terminal-text);
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .terminal-title span {
+      height: 12px;
+      width: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+      display: inline-block;
+    }
+
+    .terminal-title .red {
+      background-color: #ff5f56;
+    }
+    .terminal-title .yellow {
+      background-color: #ffbd2e;
+    }
+    .terminal-title .green {
+      background-color: #27c93f;
+    }
+
+    .terminal-text {
+      font-family: "Courier New", monospace;
+      color: var(--terminal-text);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .terminal-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background-color: var(--terminal-cursor);
+      margin-left: 2px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .terminal-icon {
+      font-size: 3rem;
+      color: var(--accent);
+      margin-right: 20px;
+      opacity: 0.7;
+    }
+
+    /* FAQ Styles with Details Element */
+    .faq-container {
+      margin-top: 2rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .faq-category {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px var(--card-shadow);
+      transition: all 0.3s ease;
+      border: 1px solid var(--card-border);
+    }
+
+    .faq-category-title {
+      background-color: var(--primary);
+      color: var(--light);
+      padding: 1rem 1.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .faq-category-title i {
+      margin-right: 10px;
+      color: var(--accent);
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--card-border);
+      overflow: hidden;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    .faq-container details {
+      transition: all 0.3s ease;
+    }
+
+    .faq-container details summary {
+      background-color: rgba(5, 56, 107, 0.05);
+      padding: 18px 24px;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      user-select: none;
+      list-style: none;
+    }
+
+    .faq-container details summary:hover {
+      background-color: rgba(5, 56, 107, 0.1);
+    }
+
+    .faq-container details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-container details summary:after {
+      content: "\f078";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      color: var(--secondary);
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    .faq-container details[open] summary:after {
+      transform: rotate(180deg);
+    }
+
+    .faq-container details .faq-answer {
+      padding: 20px 24px;
+      color: var(--dark);
+      background-color: var(--light);
+      font-size: 1rem;
+      line-height: 1.5;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .faq-answer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .faq-answer a:hover {
+      color: var(--secondary);
+      text-decoration: underline;
+    }
+
+    .faq-answer ul, .faq-answer ol {
+      padding-left: 1.5rem;
+      margin: 0.5rem 0;
+    }
+
+    .faq-answer li {
+      margin-bottom: 0.5rem;
+    }
+
+    .faq-answer code {
+      background-color: rgba(5, 56, 107, 0.1);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+
+    .faq-answer pre {
+      background-color: var(--terminal-bg);
+      color: var(--terminal-text);
+      padding: 1rem;
+      border-radius: 5px;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-family: "Courier New", monospace;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .terminal-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .terminal-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div th:insert="fragments/navbar :: navbar"></div>
+
+<div class="container">
+  <!-- Terminal Banner -->
+  <div class="terminal-banner">
+    <i class="fas fa-question-circle terminal-icon"></i>
+    <div class="terminal-content">
+      <div class="terminal-title">
+        <span class="red"></span>
+        <span class="yellow"></span>
+        <span class="green"></span>
+        ~/Ciber-Log/Faqs
+      </div>
+      <div class="terminal-text">
+        $ ./get-help<br />
+        [*] Accessing knowledge base...<br />
+        [+] Welcome to CiberLog FAQ. Finding answers to your questions
+        <span class="terminal-cursor"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="faq-container">
+    <!-- General Category -->
+    <div class="faq-category">
+      <div class="faq-category-title">
+        <i class="fas fa-info-circle"></i> Información General
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Qué es CiberLog?</summary>
+          <div class="faq-answer">
+            <p>CiberLog es una plataforma de ciberseguridad impulsada por la comunidad donde profesionales de seguridad, entusiastas y principiantes pueden compartir conocimientos, aprender y mejorar sus habilidades. Nuestra plataforma ofrece:</p>
+            <ul>
+              <li>Un sistema de blog colaborativo para artículos de ciberseguridad</li>
+              <li>Desafíos CTF (Capture The Flag) semanales</li>
+              <li>Foros para discutir temas de seguridad</li>
+              <li>Recursos para aprender conceptos de ciberseguridad</li>
+            </ul>
+            <p>Nuestra misión es crear un entorno accesible y educativo para todos los interesados en la ciberseguridad.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Es gratuito usar CiberLog?</summary>
+          <div class="faq-answer">
+            <p>Sí, CiberLog es completamente gratuito. La plataforma es de código abierto bajo la Licencia MIT y está respaldada por nuestra comunidad. Creemos en hacer que la educación en ciberseguridad sea accesible para todos.</p>
+            <p>Aunque las funciones principales son gratuitas, ofrecemos membresías premium opcionales que brindan beneficios adicionales como desafíos exclusivos, acceso temprano al contenido y mentoría directa de profesionales experimentados.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Quién está detrás de CiberLog?</summary>
+          <div class="faq-answer">
+            <p>CiberLog fue creado por un equipo de profesionales y educadores en ciberseguridad que querían construir una mejor plataforma para compartir conocimientos y aprender sobre conceptos de seguridad. La plataforma es mantenida por una mezcla de voluntarios y miembros del equipo principal apasionados por la educación en ciberseguridad.</p>
+            <p>Nuestra comunidad incluye profesionales de ciberseguridad, investigadores académicos, estudiantes y entusiastas de todo el mundo que contribuyen con contenido, desafíos y ayudan a moderar las discusiones.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Account & Profile Category -->
+    <div class="faq-category">
+      <div class="faq-category-title">
+        <i class="fas fa-user-shield"></i> Cuenta y Perfil
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Cómo creo una cuenta?</summary>
+          <div class="faq-answer">
+            <p>Crear una cuenta en CiberLog es simple:</p>
+            <ol>
+              <li>Haz clic en el botón "Registrarse" en la esquina superior derecha de la página principal</li>
+              <li>Ingresa tu dirección de correo electrónico, nombre de usuario y contraseña</li>
+              <li>Revisa tu correo electrónico para el enlace de verificación</li>
+              <li>Haz clic en el enlace para activar tu cuenta</li>
+              <li>Completa tu perfil con información adicional (opcional)</li>
+            </ol>
+            <p>Una vez registrado, tendrás acceso a todas las funciones de la comunidad, incluyendo escribir artículos, participar en desafíos y comentar en publicaciones.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Cómo actualizo mi información de perfil?</summary>
+          <div class="faq-answer">
+            <p>Para actualizar tu información de perfil:</p>
+            <ol>
+              <li>Inicia sesión en tu cuenta</li>
+              <li>Haz clic en tu avatar en la esquina superior derecha</li>
+              <li>Selecciona "Configuración de Perfil" del menú desplegable</li>
+              <li>Actualiza tu información según sea necesario</li>
+              <li>Haz clic en "Guardar Cambios" para aplicar tus actualizaciones</li>
+            </ol>
+            <p>Puedes editar tu biografía, habilidades, enlaces de redes sociales y foto de perfil desde esta página. Recuerda que tener un perfil completo ayuda a otros miembros de la comunidad a entender tu experiencia y conocimientos.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Puedo usar un seudónimo en lugar de mi nombre real?</summary>
+          <div class="faq-answer">
+            <p>Sí, puedes usar un seudónimo o alias en lugar de tu nombre real. Muchos de nuestros miembros usan seudónimos por razones de privacidad o profesionales. Al crear tu cuenta, simplemente usa tu nombre o alias preferido en el campo de nombre de usuario.</p>
+            <p>Ten en cuenta que construir una identidad online consistente puede ayudarte a establecer credibilidad dentro de la comunidad, incluso si usas un seudónimo.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Content & Articles Category -->
+    <div class="faq-category">
+      <div class="faq-category-title">
+        <i class="fas fa-file-alt"></i> Contenido y Artículos
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Cómo escribo y publico un artículo?</summary>
+          <div class="faq-answer">
+            <p>Para escribir y publicar un artículo en CiberLog:</p>
+            <ol>
+              <li>Inicia sesión en tu cuenta</li>
+              <li>Haz clic en el botón "Escribir Artículo" en el encabezado</li>
+              <li>Completa el título del artículo, resumen y contenido</li>
+              <li>Agrega etiquetas relevantes para ayudar a categorizar tu artículo</li>
+              <li>Añade ejemplos de código, imágenes o diagramas según sea necesario</li>
+              <li>Previsualiza tu artículo para verificar el formato</li>
+              <li>Haz clic en "Enviar" para publicar (o "Guardar como Borrador" para continuar después)</li>
+            </ol>
+            <p>Los nuevos artículos pasan por un breve proceso de revisión por nuestros moderadores de la comunidad antes de aparecer en la página principal. Esto ayuda a mantener la calidad y asegura que el contenido se alinee con nuestras pautas comunitarias.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Qué tipo de contenido es apropiado para CiberLog?</summary>
+          <div class="faq-answer">
+            <p>CiberLog se enfoca en temas de ciberseguridad y campos relacionados. El contenido apropiado incluye:</p>
+            <ul>
+              <li>Tutoriales técnicos y guías de ciberseguridad</li>
+              <li>Hallazgos de investigación de seguridad y divulgaciones de vulnerabilidades (siguiendo prácticas de divulgación responsable)</li>
+              <li>Reseñas y comparaciones de herramientas</li>
+              <li>Estudios de caso y análisis de incidentes</li>
+              <li>Mejores prácticas para seguridad y privacidad</li>
+              <li>Discusiones sobre marcos y políticas de seguridad</li>
+              <li>Consejos de carrera en ciberseguridad y recursos educativos</li>
+            </ul>
+            <p>Alentamos contenido educativo que ayude a otros a aprender y mejorar sus conocimientos de seguridad. No se permite contenido que promueva actividades ilegales, contenga ataques personales o viole pautas éticas.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Puedo incluir ejemplos de código en mis artículos?</summary>
+          <div class="faq-answer">
+            <p>Sí, puedes incluir ejemplos de código en tus artículos usando el editor de código integrado. Así es como:</p>
+            <ol>
+              <li>Al editar tu artículo, haz clic en el botón de bloque de código en la barra de herramientas del editor</li>
+              <li>Selecciona el lenguaje de programación del menú desplegable</li>
+              <li>Pega o escribe tu código</li>
+              <li>Haz clic en "Insertar" para agregar el código formateado a tu artículo</li>
+            </ol>
+            <p>Los ejemplos de código se mostrarán con resaltado de sintaxis para facilitar su lectura. Al compartir ejemplos de código, especialmente relacionados con seguridad, asegúrate de que:</p>
+            <ul>
+              <li>El código esté debidamente comentado y explicado</li>
+              <li>No compartas exploits que puedan ser mal utilizados</li>
+              <li>Proporciones la atribución adecuada si usas código de otras fuentes</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- CTF Challenges Category -->
+    <div class="faq-category">
+      <div class="faq-category-title">
+        <i class="fas fa-flag"></i> Desafíos CTF
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Qué son los desafíos CTF semanales?</summary>
+          <div class="faq-answer">
+            <p>Nuestros desafíos semanales Capture The Flag (CTF) son rompecabezas de ciberseguridad diseñados para probar y mejorar tus habilidades de seguridad. Cada semana, lanzamos un nuevo desafío enfocado en un concepto o técnica de seguridad específica.</p>
+            <p>Los desafíos pueden incluir:</p>
+            <ul>
+              <li>Seguridad de aplicaciones web</li>
+              <li>Criptografía</li>
+              <li>Ingeniería inversa</li>
+              <li>Seguridad de redes</li>
+              <li>Análisis forense</li>
+              <li>OSINT (Inteligencia de Fuentes Abiertas)</li>
+            </ul>
+            <p>El objetivo es encontrar la "bandera" (una cadena específica) resolviendo el desafío. Los participantes ganan puntos y reconocimiento en nuestra tabla de clasificación por completar exitosamente los desafíos.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Cómo participo en los desafíos CTF?</summary>
+          <div class="faq-answer">
+            <p>Para participar en nuestros desafíos CTF:</p>
+            <ol>
+              <li>Inicia sesión en tu cuenta de CiberLog</li>
+              <li>Navega a la sección "CTF" del menú principal</li>
+              <li>Selecciona el desafío actual o explora desafíos pasados</li>
+              <li>Lee la descripción e instrucciones del desafío</li>
+              <li>Accede al entorno del desafío (si aplica)</li>
+              <li>Trabaja en resolver el desafío</li>
+              <li>Envía tu solución (la bandera) a través de la página del desafío</li>
+            </ol>
+            <p>Cada desafío tiene un marco de tiempo específico (generalmente una semana) durante el cual puedes enviar tu solución para ganar puntos. Después de que termine el período oficial, los desafíos permanecen disponibles para práctica pero ya no otorgan puntos en la tabla de clasificación.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Son adecuados los desafíos CTF para principiantes?</summary>
+          <div class="faq-answer">
+            <p>Ofrecemos desafíos CTF para todos los niveles de habilidad, incluyendo principiantes. Cada desafío está claramente etiquetado con una calificación de dificultad:</p>
+            <ul>
+              <li><strong>Principiante</strong>: Perfecto para quienes recién comienzan en ciberseguridad</li>
+              <li><strong>Intermedio</strong>: Requiere conocimientos básicos de seguridad y técnicas</li>
+              <li><strong>Avanzado</strong>: Diseñado para profesionales de seguridad experimentados</li>
+              <li><strong>Experto</strong>: Desafíos complejos que requieren experiencia profunda en seguridad</li>
+            </ul>
+            <p>Si eres nuevo en los CTFs, recomendamos comenzar con nuestros desafíos para principiantes y leer los recursos y pistas proporcionados. También tenemos una "Ruta de Aprendizaje CTF" dedicada diseñada para introducir a principiantes a técnicas y herramientas comunes usadas en competencias CTF.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Technical Support Category -->
+    <div class="faq-category">
+      <div class="faq-category-title">
+        <i class="fas fa-tools"></i> Soporte Técnico
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Cómo reporto un error o problema técnico?</summary>
+          <div class="faq-answer">
+            <p>Si encuentras un error o problema técnico en CiberLog, puedes reportarlo a través de los siguientes canales:</p>
+            <ul>
+              <li><strong>Formulario de Reporte de Errores</strong>: Usa el <a href="/support/bug-report">formulario dedicado de reporte de errores</a> para proporcionar información detallada sobre el problema</li>
+              <li><strong>Repositorio de GitHub</strong>: Abre un issue en nuestro <a href="https://github.com/ciberlog/platform">repositorio de GitHub</a> si estás familiarizado con GitHub</li>
+              <li><strong>Página de Contacto</strong>: Usa nuestra <a href="/contact">página de contacto</a> para consultas generales o si las opciones anteriores no son adecuadas</li>
+            </ul>
+            <p>Al reportar un error, incluye tanta información como sea posible, como:</p>
+            <ul>
+              <li>Pasos para reproducir el problema</li>
+              <li>Lo que esperabas que pasara</li>
+              <li>Lo que realmente pasó</li>
+              <li>Capturas de pantalla del problema (si aplica)</li>
+              <li>Información de tu navegador y sistema operativo</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Qué navegadores son compatibles?</summary>
+          <div class="faq-answer">
+            <p>CiberLog es compatible con todos los navegadores modernos, incluyendo:</p>
+            <ul>
+              <li>Google Chrome (versiones más recientes)</li>
+              <li>Mozilla Firefox (versiones más recientes)</li>
+              <li>Microsoft Edge (versiones basadas en Chromium)</li>
+              <li>Safari (versiones más recientes)</li>
+              <li>Opera (versiones más recientes)</li>
+            </ul>
+            <p>Para la mejor experiencia, recomendamos mantener tu navegador actualizado a la versión más reciente. Algunas funciones pueden no funcionar correctamente en navegadores más antiguos o Internet Explorer.</p>
+            <p>Nuestro sitio móvil está optimizado para dispositivos iOS y Android y funciona mejor en versiones recientes de navegadores móviles.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Hay una aplicación móvil para CiberLog?</summary>
+          <div class="faq-answer">
+            <p>Actualmente, CiberLog no tiene una aplicación móvil dedicada. Sin embargo, nuestro sitio web es completamente responsivo y está optimizado para dispositivos móviles, proporcionando una buena experiencia en smartphones y tablets.</p>
+            <p>Puedes acceder a todas las funciones de CiberLog a través de tu navegador móvil. Simplemente navega a nuestro sitio web e inicia sesión con tus credenciales.</p>
+            <p>Estamos considerando desarrollar aplicaciones móviles para iOS y Android en el futuro. Si te gustaría ver una aplicación móvil dedicada, vota por esta función en nuestro <a href="/roadmap">roadmap público</a>.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Community & Contribution Category -->
+    <div class="faq-category">
+      <div class="faq-category-title">
+        <i class="fas fa-users"></i> Comunidad y Contribución
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Cómo puedo contribuir a CiberLog más allá de escribir artículos?</summary>
+          <div class="faq-answer">
+            <p>Hay muchas formas de contribuir a la comunidad CiberLog:</p>
+            <ul>
+              <li><strong>Crear desafíos CTF</strong>: Diseña y envía desafíos para nuestro programa semanal de CTF</li>
+              <li><strong>Responder preguntas</strong>: Ayuda a otros miembros en los foros y tableros de discusión</li>
+              <li><strong>Proporcionar retroalimentación</strong>: Comenta en artículos y ofrece sugerencias constructivas</li>
+              <li><strong>Reportar errores</strong>: Ayuda a mejorar la plataforma reportando problemas</li>
+              <li><strong>Traducir contenido</strong>: Ayuda a traducir artículos para hacerlos accesibles a hablantes no nativos de inglés</li>
+              <li><strong>Contribuir código</strong>: Ayuda a desarrollar nuevas funciones o corregir errores en nuestro repositorio de GitHub</li>
+              <li><strong>Mentorar a otros</strong>: Comparte tu conocimiento mentorando a principiantes en la comunidad</li>
+            </ul>
+            <p>Si estás interesado en involucrarte más en la comunidad, revisa nuestra <a href="/contribute">guía de contribución</a> o contacta al equipo en <a href="mailto:community@ciberlog.com">community@ciberlog.com</a>.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Cómo funciona el sistema de reputación?</summary>
+          <div class="faq-answer">
+            <p>El sistema de reputación de CiberLog recompensa a los miembros activos y útiles de la comunidad. Puedes ganar puntos de reputación a través de:</p>
+            <ul>
+              <li>Publicar artículos de calidad (10 puntos por artículo)</li>
+              <li>Recibir votos positivos en tus artículos (2 puntos por voto positivo)</li>
+              <li>Que tus artículos sean marcados como "útiles" (5 puntos cada uno)</li>
+              <li>Completar desafíos CTF (los puntos varían según la dificultad)</li>
+              <li>Proporcionar respuestas útiles en foros (3 puntos por respuesta con voto positivo)</li>
+              <li>Crear desafíos CTF que sean aceptados (15 puntos)</li>
+            </ul>
+            <p>Una mayor reputación desbloquea varios privilegios:</p>
+            <ul>
+              <li><strong>50 puntos</strong>: Acceso a funciones beta</li>
+              <li><strong>100 puntos</strong>: Capacidad de comentar en todos los artículos</li>
+              <li><strong>200 puntos</strong>: Derechos de voto en decisiones comunitarias</li>
+              <li><strong>500 puntos</strong>: Herramientas de moderación</li>
+              <li><strong>1000 puntos</strong>: Capacidad de crear desafíos CTF</li>
+            </ul>
+            <p>Tu reputación se muestra en tu perfil y junto a tu nombre de usuario en comentarios y publicaciones del foro.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>¿Cuáles son las pautas de la comunidad?</summary>
+          <div class="faq-answer">
+            <p>Nuestras pautas comunitarias están diseñadas para asegurar que CiberLog siga siendo un entorno acogedor, educativo y respetuoso. Las pautas clave incluyen:</p>
+            <ul>
+              <li><strong>Sé respetuoso</strong>: Trata a todos los miembros de la comunidad con respeto, independientemente de su nivel de habilidad o antecedentes</li>
+              <li><strong>Enfócate en la educación</strong>: Comparte conocimiento para ayudar a otros a aprender y mejorar</li>
+              <li><strong>Practica seguridad ética</strong>: Sigue prácticas de divulgación responsable y principios de hacking ético</li>
+              <li><strong>Da crédito</strong>: Atribuye adecuadamente las fuentes y respeta la propiedad intelectual</li>
+              <li><strong>Sin contenido ilegal</strong>: No compartas contenido que promueva actividades ilegales</li>
+              <li><strong>Retroalimentación constructiva</strong>: Ofrece sugerencias útiles en lugar de críticas</li>
+              <li><strong>Sin acoso</strong>: No se toleran ataques personales, discriminación y acoso</li>
+            </ul>
+            <p>Las violaciones de estas pautas pueden resultar en eliminación de contenido, advertencias o suspensión de cuenta en casos severos. Para las pautas completas, visita nuestra <a href="/community-guidelines">página de Pautas Comunitarias</a>.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:insert="/fragments/footer :: footer"></div>
+
+</body>
+</html>

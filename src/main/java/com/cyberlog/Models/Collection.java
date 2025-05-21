@@ -46,7 +46,7 @@ public class Collection {
     }
 
     public enum Status {
-        draft, review, published
+        draft, published
     }
 
     @Enumerated(EnumType.STRING)

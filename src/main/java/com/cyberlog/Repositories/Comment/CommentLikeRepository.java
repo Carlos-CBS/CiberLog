@@ -13,4 +13,6 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, UUID> 
     Iterable<? extends CommentLike> findByComment(Comment comment);
 
     void deleteByCommentIn(List<Comment> comments);
+
+    void deleteByUser(User user);
 }

@@ -1,57 +1,112 @@
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crear Blog de Ciberseguridad</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <style>
+        /* Estilos básicos del modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css" />
+        .modal.show {
+            display: block;
+        }
 
-    <link rel="stylesheet" href="/css/createBlog.css">
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
 
-    <!-- Scripts externos -->
-    <script src="https://cdn.jsdelivr.net/npm/commonmark@0.30.0/dist/commonmark.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+        .modal-header, .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 0.5em 1em;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-outline {
+            background: none;
+            border: 1px solid #333;
+        }
+    </style>
 </head>
 <body>
 
-<header>
-    <h1>Crear Nuevo Artículo de Ciberseguridad</h1>
-</header>
+<!-- Botón para abrir el modal -->
+<button id="openModalBtn">Abrir Modal</button>
 
-<div class="form-container">
-    <form action="/saveBlog" method="POST" id="blogForm" enctype="multipart/form-data" onsubmit="return prepareFormSubmission()">
-        <div class="form-group">
-            <label for="title">Título del Artículo:</label>
-            <input type="text" id="title" name="title" required placeholder="Ej: Vulnerabilidades en Sistemas IoT 2025" />
+<!-- Modal -->
+<div class="modal" id="myModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title">Título del Modal</span>
+            <button class="modal-close" id="closeModalBtn">&times;</button>
         </div>
-
-        <div class="form-group">
-            <label>Plantillas:</label>
-            <div class="templates">
-                <button type="button" class="template-btn" data-template="vulnerability">Análisis de Vulnerabilidad</button>
-                <button type="button" class="template-btn" data-template="tutorial">Tutorial Técnico</button>
-                <button type="button" class="template-btn" data-template="news">Noticia de Seguridad</button>
-                <button type="button" class="template-btn" data-template="poc">Prueba de Concepto</button>
-            </div>
-
-        <div class="form-group">
-            <label for="markdown-editor">Contenido (Markdown):</label>
-            <textarea id="markdown-editor" name="content" required placeholder="Escribe tu blog en Markdown aquí" rows="12"></textarea>
+        <div class="modal-body">
+            <p>Este es el contenido del modal.</p>
         </div>
-
-        <div class="form-group">
-            <button type="submit">Publicar Artículo</button>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="closeFooterBtn">Cerrar</button>
         </div>
-    </form>
+    </div>
 </div>
 
-<script src="/js/createBlog.js" defer></script>
-<script src="/js/createBlogPlantillas.js" defer></script>
+<script>
+    // Elementos
+    const modal = document.getElementById('myModal');
+    const openBtn = document.getElementById('openModalBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const closeFooterBtn = document.getElementById('closeFooterBtn');
 
+    // Abrir modal
+    openBtn.addEventListener('click', () => {
+        modal.classList.add('show');
+    });
+
+    // Cerrar modal
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('show');
+    });
+
+    closeFooterBtn.addEventListener('click', () => {
+        modal.classList.remove('show');
+    });
+
+    // Cerrar al hacer clic fuera del contenido del modal
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+</script>
 
 </body>
 </html>

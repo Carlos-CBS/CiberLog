@@ -2,7 +2,11 @@ package com.cyberlog.Controllers.Tag;
 
 import com.cyberlog.Models.Article;
 import com.cyberlog.Models.Tag;
+import com.cyberlog.Models.User;
 import com.cyberlog.Repositories.Article.ArticleRepositoryCRUD;
+import com.cyberlog.Repositories.UserRepo;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import com.cyberlog.Repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static com.cyberlog.Controllers.User.UserController.md5Hex;
 
 @Controller
 @RequestMapping("/tag")
@@ -28,10 +33,23 @@ public class TagController {
     @Autowired
     private ArticleRepositoryCRUD articleRepo;
 
+    @Autowired
+    private UserRepo userRepo;
+
     @GetMapping("/create")
     public String create(Model model) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User user = userRepo.findUserByEmail(email);
+
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
         model.addAttribute("tag", new Tag());
         model.addAttribute("tags", tagRepo.findAll());
+        model.addAttribute("user", user);
         return "tag/create";
     }
 
@@ -60,7 +78,7 @@ public class TagController {
             tags.add(tag);
         }
 
-        article.getTags().clear();  // si quieres reemplazar los tags actuales
+        article.getTags().clear();
         article.getTags().addAll(tags);
 
         articleRepo.save(article);

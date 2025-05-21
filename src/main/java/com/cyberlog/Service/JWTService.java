@@ -19,7 +19,7 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    private String secretKey = "cF781A"; // Usa una clave secreta más segura y larga en producción
+    private String secretKey = "cF781A";
 
     public JWTService() {
         try {
@@ -37,7 +37,7 @@ public class JWTService {
                 .setClaims(claims)
                 .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 30 * 1000L)) // 30 horas
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000L)) // 24 horas
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -64,7 +64,6 @@ public class JWTService {
                 .getBody();
     }
 
-    // Modificar validateToken para no depender de UserDetails
     public boolean validateToken(String token) {
         return !isTokenExpired(token);
     }

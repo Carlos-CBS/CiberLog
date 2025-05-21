@@ -9,10 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.MessageDigest;
@@ -46,13 +43,14 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepo.findUserByEmail(auth.getName());
 
-        String gravatarHash = md5Hex(user.getEmail());
+        String gravatarHash = md5Hex(auth.getName());
         String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
 
         model.addAttribute("user", user);
-        model.addAttribute("gravatarUrl", gravatarUrl);
+        model.addAttribute("gravatar", gravatarUrl);
         return "general/bio";
     }
+
 
     @PostMapping("/edit")
     public String editProfile(
@@ -83,6 +81,19 @@ public class UserController {
         return "redirect:/user/bio";
     }
 
+    @GetMapping("/{name}/bio")
+    public String bio(
+            @PathVariable String name,
+            Model model) {
+        User user = userRepo.findUserByName(name);
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("user", user);
+        model.addAttribute("gravatar", gravatarUrl);
+        return "general/bio";
+    }
 }

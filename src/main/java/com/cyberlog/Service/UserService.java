@@ -39,7 +39,7 @@ public class UserService {
             );
 
             if (auth.isAuthenticated()) {
-                return jwtService.generateToken(user.getEmail()); // <--- ¡Asegúrate que esto esté bien!
+                return jwtService.generateToken(user.getEmail());
             }
         } catch (Exception e) {
             System.err.println("Error autenticando: " + e.getMessage());

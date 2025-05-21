@@ -17,13 +17,15 @@ public interface ArticleRepositoryCRUD extends JpaRepository<Article, UUID> {
     List<Article> findByCollection(Collection collection);
     boolean existsByCollectionAndSlug(Collection collection, String slug);
     Optional<Article> findBySlug(String slug);
-    Optional<Article> findByCollectionAndSlug(Collection collection, String slug);
-
-    Optional<Article> findByCollectionSlugAndSlug(String collectionSlug, String articleSlug);
 
     Optional<Article> findByUserAndSlug(User user, String articleSlug);
 
     void deleteAllByCollection(Collection blog);
 
-    List<Article> findByTags_IdIn(List<UUID> tagIds);
+
+    List<Article> findByStatus(Article.Status status);
+
+    List<Article> findByStatusAndTags_IdIn(Article.Status status, List<UUID> tagIds);
+
+    void deleteByUser(User user);
 }

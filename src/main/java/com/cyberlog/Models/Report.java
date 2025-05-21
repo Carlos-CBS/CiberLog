@@ -36,7 +36,7 @@ public class Report {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public enum Status {
-        pending, reviewed, resolved, dismissed
+        pending, resolved, dismissed
     }
 
     @Enumerated(EnumType.STRING)

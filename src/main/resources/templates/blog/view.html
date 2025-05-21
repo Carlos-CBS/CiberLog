@@ -1,45 +1,312 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="${blog.title}">Blog View</title>
+  <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <script src="/js/navbar.js" defer></script>
+    <link rel="stylesheet" th:href="@{/css/footer.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* tu CSS aquí */
+    :root {
+      --primary: #05386B;
+      --secondary: #379683;
+      --accent: #ADCBE3;       /* azul pastel para detalles suaves */
+      --dark: #2C3E50;         /* fondo gris azulado claro */
+      --light: #1B2A41;        /* texto principal oscuro */
+      --danger: #D9534F;
+      --warning: #F0AD4E;
+      --success: #5CB85C;
+      --terminal-bg: #1B2A41;
+      --terminal-text: #ADCBE3;
+      --terminal-cursor: #2A4D69;
+    }
+
+    body {
+      background-color: var(--dark);
+      color: var(--light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.75;
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .main-container {
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 35px 30px;
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(42, 77, 105, 0.15);
+      color: var(--light);
+    }
+
+    /* Blog Header */
+    .blog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .blog-header h1 {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 2.5rem;
+      border-left: 5px solid var(--secondary);
+      padding-left: 18px;
+      margin: 0;
+      letter-spacing: 0.05em;
+      flex-grow: 1;
+    }
+
+    .blog-actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    /* Buttons */
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      text-transform: uppercase;
+      box-shadow: 0 6px 18px rgba(42, 77, 105, 0.3);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      background: var(--secondary);
+      box-shadow: 0 8px 25px rgba(42, 77, 105, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--accent);
+      color: var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--secondary);
+      color: white;
+    }
+
+    /* Blog info */
+    .blog-info {
+      background-color: var(--accent);
+      padding: 20px 22px;
+      border-radius: 12px;
+      border-left: 5px solid var(--secondary);
+      margin-bottom: 40px;
+    }
+
+    .blog-summary {
+      font-size: 1.15rem;
+      color: var(--primary);
+      font-style: italic;
+      margin-bottom: 15px;
+    }
+
+    .blog-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+    }
+
+    .blog-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .blog-meta i {
+      color: var(--secondary);
+    }
+
+    .status-pill {
+      background-color: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .status-draft {
+      background-color: var(--warning);
+    }
+
+    .status-published {
+      background-color: var(--success);
+    }
+
+    /* Articles container */
+    .articles-container {
+      margin-top: 40px;
+    }
+
+    .article-card {
+      background-color: #f5faff;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(42, 77, 105, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 5px solid var(--secondary);
+    }
+
+    .article-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(42, 77, 105, 0.15);
+    }
+
+    .article-card h2 {
+      color: var(--primary);
+      font-size: 1.8rem;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .article-summary {
+      color: var(--light);
+      margin-bottom: 20px;
+    }
+
+    .article-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
+
+    .read-more {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.3s ease;
+    }
+
+    .read-more:hover {
+      color: var(--secondary);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background-color: #f5faff;
+      border-radius: 12px;
+      margin-top: 30px;
+    }
+
+    .empty-state h2 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+
+    .empty-state p {
+      color: var(--light);
+      margin-bottom: 30px;
+      font-size: 1.2rem;
+    }
+
+    .create-first {
+      font-size: 1.1rem;
+      padding: 14px 30px;
+    }
   </style>
 </head>
 <body>
-<div class="header">
-  <h1 th:text="${blog.title}">Blog Title</h1>
-  <div>
-    <a th:href="@{|/blog/update/${blog.id}|}">Edit</a>
-    <a th:href="@{/blog/list}">Back</a>
-  </div>
+<div th:insert="fragments/navbar :: navbar"></div>
+
+<div class="main-container">
+    <div class="blog-header">
+        <h1 th:text="${blog.title}">Título de la Colección de Blog</h1>
+        <div class="blog-actions">
+            <a th:href="@{|/blog/update/${blog.id}|}" class="btn btn-secondary">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a th:href="@{/blog/list}" class="btn">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="blog-info">
+        <div class="blog-summary" th:text="${blog.summary}">
+            Esta colección de blogs contiene artículos sobre buenas prácticas en ciberseguridad, herramientas e información del sector.
+        </div>
+        <div class="blog-meta">
+      <span>
+        <i class="fas fa-tag"></i> Estado:
+        <span class="status-pill" th:classappend="${blog.status.name() == 'DRAFT' ? 'status-draft' : 'status-published'}" th:text="${blog.status.name()}">BORRADOR</span>
+      </span>
+            <span>
+        <i class="fas fa-calendar-plus"></i> Creado:
+        <b th:text="${#temporals.format(blog.created_at, 'dd MMM yyyy')}">18 May 2025</b>
+      </span>
+            <span>
+        <i class="fas fa-calendar-check"></i> Actualizado:
+        <b th:text="${#temporals.format(blog.updated_at, 'dd MMM yyyy')}">19 May 2025</b>
+      </span>
+        </div>
+    </div>
+
+    <div class="articles-container">
+        <div th:if="${articles.empty}" class="empty-state">
+            <h2>Aún no hay artículos</h2>
+            <p>Comienza a construir tu colección creando tu primer artículo</p>
+            <a th:href="@{|/article/create?collectionId=${blog.id}|}" class="btn create-first">
+                <i class="fas fa-plus-circle"></i> Crear tu primer artículo
+            </a>
+        </div>
+
+        <div th:unless="${articles.empty}">
+            <div th:each="article : ${articles}" class="article-card">
+                <h2 th:text="${article.title}">Título del Artículo</h2>
+                <div class="article-summary" th:text="${article.summary}">
+                    Resumen del artículo con puntos clave y descripción general del contenido. Esto brinda a los lectores una comprensión rápida de lo que aprenderán.
+                </div>
+                <div class="article-meta">
+          <span>
+            <i class="fas fa-calendar-alt"></i>
+            <span th:text="${#temporals.format(article.created_at, 'dd MMM yyyy')}">18 May 2025</span>
+          </span>
+                    <a th:href="@{'/article/view/' + ${article.id}}" class="read-more">
+                        Leer más <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-center" style="margin-top: 40px; text-align: center;">
+                <a th:href="@{|/article/create?collectionId=${blog.id}|}" class="btn">
+                    <i class="fas fa-plus-circle"></i> Agregar nuevo artículo
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
-<section class="blog-info">
-  <p th:text="${blog.summary}">Summary...</p>
-  <div>
-    <span>Status: <b th:text="${blog.status.name()}">draft</b></span>
-    <span>Created: <b th:text="${#temporals.format(blog.created_at, 'dd/MM/yyyy')}">--/--/----</b></span>
-    <span>Updated: <b th:text="${#temporals.format(blog.updated_at, 'dd/MM/yyyy')}">--/--/----</b></span>
-  </div>
-</section>
-
-<section class="empty-state">
-  <h1 th:text="${blog.title}">Blog Title</h1>
-
-  <div th:if="${articles.empty}">
-    <p>No articles yet.</p>
-  </div>
-
-  <div th:each="article : ${articles}">
-    <h2 th:text="${article.title}">Article Title</h2>
-    <p th:text="${article.summary}">Article summary...</p>
-    <a th:href="@{'/article/view/' + ${article.id}}">Read more</a>
-  </div>
-
-  <a th:href="@{|/article/create?collectionId=${blog.id}|}">Create your first article</a>
-</section>
+<div th:insert="/fragments/footer :: footer"></div>
 </body>
+
 </html>

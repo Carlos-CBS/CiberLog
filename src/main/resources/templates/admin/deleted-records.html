@@ -1,37 +1,328 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <title>Admin - Historial de Eliminados</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Historial de Eliminados</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="/js/navbar.js" defer></script>
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+
+  <style>
+    :root {
+      --primary: #05386B;
+      --secondary: #379683;
+      --accent: #5CDB95;
+      --dark: #2C3E50;
+      --light: #EDF5E1;
+      --danger: #E74C3C;
+      --warning: #F39C12;
+      --success: #2ECC71;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--dark);
+      color: var(--light);
+      margin: 0;
+      padding: 0;
+      background-image:
+              radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px),
+              radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--secondary);
+    }
+
+    .page-title {
+      color: var(--accent);
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .filter-label {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .filter-select {
+      background-color: var(--dark);
+      color: var(--light);
+      border: 1px solid var(--secondary);
+      padding: 8px 12px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .search-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      position: relative;
+      min-width: 200px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border-radius: 4px;
+      border: 1px solid var(--secondary);
+      background-color: var(--dark);
+      color: var(--light);
+      outline: none;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 12px;
+      color: var(--accent);
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      margin-top: 20px;
+    }
+
+    .history-table thead {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .history-table th {
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .history-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid #eee;
+      color: var(--dark);
+    }
+
+    .history-table tbody tr:hover {
+      background-color: rgba(5, 56, 107, 0.05);
+    }
+
+    .history-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .record-type {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .type-comment {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .type-article {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .empty-state {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 60px 30px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+
+    .empty-state h3 {
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+      color: var(--light);
+    }
+
+    .empty-state p {
+      color: var(--light);
+      opacity: 0.8;
+      margin-bottom: 25px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 25px;
+      background: var(--primary);
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(5, 56, 107, 0.3);
+    }
+
+    .content-cell {
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+        margin: 10px auto;
+      }
+
+      .page-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box {
+        width: 100%;
+      }
+
+      .history-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
 </head>
 <body>
-<h1>Historial de contenidos eliminados</h1>
-<table border="1" cellpadding="5" cellspacing="0">
-  <thead>
-  <tr>
-    <th>ID Histórico</th>
-    <th>Tipo</th>
-    <th>ID Original</th>
-    <th>Contenido</th>
-    <th>Autor</th>
-    <th>Fecha creación</th>
-    <th>Fecha eliminación</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="record : ${deletedRecords}">
-    <td th:text="${record.id}"></td>
-    <td th:text="${record.recordType}"></td>
-    <td th:text="${record.originalId}"></td>
-    <td th:text="${record.content}"></td>
-    <td th:text="${record.authorName}"></td>
-    <td th:text="${#temporals.format(record.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
-    <td th:text="${#temporals.format(record.deletedAt, 'yyyy-MM-dd HH:mm')}"></td>
-  </tr>
-  </tbody>
 
-</table>
-<br/>
-<a href="/admin/reports">Volver a reportes</a>
+<div th:insert="fragments/navbar :: navbar"></div>
+
+<div class="container">
+  <div class="page-header">
+    <h1 class="page-title">Historial de Contenidos Eliminados</h1>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <span class="filter-label">Tipo:</span>
+      <select class="filter-select">
+        <option value="">Todos</option>
+        <option value="COMMENT">Comentarios</option>
+        <option value="ARTICLE">Artículos</option>
+      </select>
+    </div>
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Buscar en historial...">
+    </div>
+  </div>
+
+  <div th:if="${deletedRecords.size() == 0}" class="empty-state">
+    <i class="fas fa-trash-alt"></i>
+    <h3>No hay registros eliminados</h3>
+    <p>No se encontraron contenidos eliminados en el sistema.</p>
+  </div>
+
+  <div th:unless="${deletedRecords.size() == 0}">
+    <table class="history-table">
+      <thead>
+      <tr>
+        <th>ID Histórico</th>
+        <th>Tipo</th>
+        <th>ID Original</th>
+        <th>Contenido</th>
+        <th>Autor</th>
+        <th>Estado del Reporte</th>
+        <th>Fecha creación</th>
+        <th>Fecha eliminación</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="record : ${deletedRecords}">
+        <td th:text="${record.id}"></td>
+        <td>
+          <span th:if="${record.recordType == 'COMMENT'}" class="record-type type-comment">Comentario</span>
+          <span th:if="${record.recordType == 'ARTICLE'}" class="record-type type-article">Artículo</span>
+        </td>
+        <td th:text="${record.originalId}"></td>
+        <td class="content-cell" th:text="${record.content}"></td>
+        <td th:text="${record.authorName}"></td>
+        <td>
+          <span th:if="${record.status.name() == 'pending'}" class="report-status status-pending">Pendiente</span>
+          <span th:if="${record.status.name() == 'resolved'}" class="report-status status-resolved">Resuelto</span>
+          <span th:if="${record.status.name() == 'dismissed'}" class="report-status status-dismissed">Descartado</span>
+        </td>
+        <td th:text="${#temporals.format(record.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${#temporals.format(record.deletedAt, 'dd/MM/yyyy HH:mm')}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <a href="/admin/reports" class="back-link">
+    <i class="fas fa-arrow-left"></i> Volver a Reportes
+  </a>
+</div>
+
+<div th:insert="fragments/footer :: footer"></div>
+
 </body>
 </html>

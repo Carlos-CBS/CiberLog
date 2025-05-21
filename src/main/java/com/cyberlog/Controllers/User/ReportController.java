@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static com.cyberlog.Controllers.User.UserController.md5Hex;
+
 @Controller
 @RequiredArgsConstructor
 public class ReportController {
@@ -96,11 +98,20 @@ public class ReportController {
 
         reportRepository.save(report);
 
-        return "redirect:" + request.getHeader("Referer");
+        return "redirect:/article/view/" + comment.getArticle().getUser().getName() + "/" + comment.getArticle().getSlug();
     }
 
     @GetMapping("/admin/reports")
     public String viewReports(Model model) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findUserByEmail(auth.getName());
+
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
+        model.addAttribute("user", user);
         model.addAttribute("reports", reportRepository.findAllByOrderByCreatedAtDesc());
         return "admin/reports";
     }
@@ -109,7 +120,7 @@ public class ReportController {
     public String deleteCommentFromReport(@RequestParam UUID commentId, @RequestParam UUID reportId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow();
 
-        // Guardar historial antes de eliminar
+
         DeletedRecord history = DeletedRecord.builder()
                 .recordType("comment")
                 .originalId(comment.getId())
@@ -117,22 +128,18 @@ public class ReportController {
                 .authorName(comment.getUser().getName())
                 .createdAt(comment.getCreatedAt())
                 .deletedAt(LocalDateTime.now())
+                .status(Report.Status.resolved)
                 .build();
 
         deletedRecordRepository.save(history);
 
-        // Eliminar reports asociados al comentario para evitar constraint
         List<Report> reports = reportRepository.findByComment(comment);
         reportRepository.deleteAll(reports);
-
-        // Eliminar likes y útiles
         commentLikeRepository.deleteAll(commentLikeRepository.findByComment(comment));
         commentUsefulRepository.deleteAll(commentUsefulRepository.findByComment(comment));
 
-        // Finalmente eliminar el comentario
         commentRepository.delete(comment);
 
-        // Marcar el reporte original como resuelto
         reportRepository.findById(reportId).ifPresent(report -> {
             report.setStatus(Report.Status.resolved);
             reportRepository.save(report);
@@ -154,11 +161,11 @@ public class ReportController {
                 .authorName(article.getUser().getName())
                 .createdAt(article.getCreated_at())
                 .deletedAt(LocalDateTime.now())
+                .status(Report.Status.resolved)
                 .build();
 
         deletedRecordRepository.save(history);
 
-        // Eliminar reports asociados al artículo para evitar constraint
         List<Report> reports = reportRepository.findByArticle(article);
         reportRepository.deleteAll(reports);
         articleViewRepository.deleteAllByArticle(article);
@@ -178,15 +185,37 @@ public class ReportController {
 
     @PostMapping("/admin/reports/dismiss")
     public String dismissReport(@RequestParam UUID reportId) {
-        reportRepository.findById(reportId).ifPresent(report -> {
-            report.setStatus(Report.Status.dismissed);
-            reportRepository.save(report);
-        });
+
+        Report report = reportRepository.findById(reportId).orElseThrow();
+
+        DeletedRecord history = DeletedRecord.builder()
+                .recordType(String.valueOf(report.getReportType()))
+                .originalId(report.getId())
+                .content(report.getContent())
+                .authorName(report.getUser() != null ? report.getUser().getName() : "unknown")
+                .createdAt(report.getCreatedAt())
+                .deletedAt(LocalDateTime.now())
+                .status(Report.Status.dismissed)
+                .build();
+
+        deletedRecordRepository.save(history);
+
+        reportRepository.delete(report);
+
         return "redirect:/admin/reports";
     }
 
+
     @GetMapping("/admin/deleted-records")
     public String viewDeletedRecords(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findUserByEmail(auth.getName());
+
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
+        model.addAttribute("user", user);
         model.addAttribute("deletedRecords", deletedRecordRepository.findAll());
         return "admin/deleted-records";
     }

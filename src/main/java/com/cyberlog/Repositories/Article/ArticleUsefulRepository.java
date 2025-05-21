@@ -13,4 +13,6 @@ public interface ArticleUsefulRepository extends JpaRepository<ArticleUseful, UU
     Long countByArticle(Article article);
 
     Iterable<? extends ArticleUseful> findByArticle(Article article);
+
+    void deleteByUser(User user);
 }

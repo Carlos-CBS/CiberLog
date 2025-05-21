@@ -47,21 +47,6 @@ button {
     border-radius: 4px;
 }
 
-button:hover {
-    background-color: #45a049;
-}
-
-.color-picker {
-    display: none;
-    position: absolute;
-    background: white;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 1000;
-}
-
 .color-picker button {
     margin: 5px;
     padding: 5px 10px;
@@ -101,3 +86,25 @@ button:hover {
 .text-green { color: #4caf50; }
 .text-yellow { color: #ffc107; }
 .text-cyan { color: #00bcd4; }
+
+/* SOLUCIÓN PARA EL PROBLEMA DEL EDITOR EN PANTALLA COMPLETA */
+.editor-toolbar.fullscreen,
+.CodeMirror-fullscreen {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Esto asegura que el modo side-by-side también funcione correctamente */
+.CodeMirror-sided.CodeMirror-fullscreen {
+    width: 50% !important;
+}
+
+/* Esto asegura que el preview en modo side-by-side ocupe el 50% restante */
+.editor-preview-side.editor-preview-active-side {
+    width: 50% !important;
+}
+
+.editor-toolbar.fullscreen::before,
+.editor-toolbar.fullscreen::after {
+    display: none !important;
+}

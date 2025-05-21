@@ -13,15 +13,9 @@ const simplemde = new SimpleMDE({
             title: "Insertar Imagen Local",
         },
         "table", "|",
-        "preview", "side-by-side", "fullscreen", "|",
-        {
-            name: "insert-color",
-            action: () => {
-                document.getElementById('color-picker').style.display = 'block';
-            },
-            className: "fa fa-paint-brush",
-            title: "Cambiar Color de Texto",
-        }
+        "preview", "fullscreen",
+        // "side-by-side", "fullscreen",
+        "|",
     ]
 });
 
@@ -119,44 +113,16 @@ function previewImage() {
     }
 }
 
-// Insertar span con clase de color
-function applyColor(colorClass) {
-    const cm = simplemde.codemirror;
-    const selectedText = cm.getSelection();
-    const coloredText = `<span class="${colorClass}">${selectedText}</span>`;
-    cm.replaceSelection(coloredText);
-    document.getElementById('color-picker').style.display = 'none';
-}
-
 // Cerrar los selectores si haces clic fuera
 document.body.addEventListener('click', function(event) {
-    const picker = document.getElementById('color-picker');
     const uploader = document.getElementById('image-uploader');
 
-    // Cerrar el selector de colores
-    if (picker && !picker.contains(event.target) && !event.target.classList.contains('fa-paint-brush')) {
-        picker.style.display = 'none';
-    }
-
-    // Cerrar el uploader de imágenes
     if (uploader && !uploader.contains(event.target) &&
         !event.target.classList.contains('fa-picture-o') &&
         !event.target.closest('.fa-picture-o')) {
         uploader.style.display = 'none';
     }
 });
-
-// HTML para el selector de colores
-const colorPickerHtml = `
-    <div id="color-picker" class="color-picker">
-        <label>Elige un color:</label><br />
-        <button onclick="applyColor('text-red')">Rojo</button>
-        <button onclick="applyColor('text-blue')">Azul</button>
-        <button onclick="applyColor('text-green')">Verde</button>
-        <button onclick="applyColor('text-yellow')">Amarillo</button>
-        <button onclick="applyColor('text-cyan')">Cian</button>
-    </div>
-    `;
 
 // HTML para el uploader de imágenes
 const imageUploaderHtml = `
@@ -172,8 +138,6 @@ const imageUploaderHtml = `
     </div>
     `;
 
-// Insertar HTML de ambos componentes
-document.body.insertAdjacentHTML('beforeend', colorPickerHtml);
 document.body.insertAdjacentHTML('beforeend', imageUploaderHtml);
 
 // Función para preparar el formulario antes de enviarlo

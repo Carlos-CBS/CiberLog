@@ -37,7 +37,7 @@ public class Article {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String content;
 
     @Column(nullable = false)
@@ -64,7 +64,7 @@ public class Article {
     private int views = 0;
 
     public enum Status {
-        draft, review, published
+        draft, published
     }
 
     @Enumerated(EnumType.STRING)

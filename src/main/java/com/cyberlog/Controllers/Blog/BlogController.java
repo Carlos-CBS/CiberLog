@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.cyberlog.Controllers.User.UserController.md5Hex;
+
 @Controller
 @RequestMapping("/blog")
 public class BlogController {
@@ -37,11 +39,16 @@ public class BlogController {
 
     @GetMapping("/create")
     public String viewCreate(Model model) {
-        // Get authenticated user
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
+        User user = userRepo.findUserByEmail(userEmail);
 
-        // Add a new blog object to the model
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
+        model.addAttribute("user", user);
         model.addAttribute("blog", new Collection());
 
         return "blog/create";
@@ -76,28 +83,41 @@ public class BlogController {
 
     @GetMapping("/list")
     public String listBlogs(Model model) {
-        // Get authenticated user
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
         User user = userRepo.findUserByEmail(userEmail);
 
-        // Get all blogs for the user
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
         List<Collection> blogs = blogRepository.findByUser(user);
         model.addAttribute("blogs", blogs);
-
+        model.addAttribute("user", user);
         return "blog/list";
     }
 
     @GetMapping("/{id}")
     public String viewBlog(@PathVariable("id") UUID id, Model model) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+        User user = userRepo.findUserByEmail(userEmail);
+
+
         Collection blog = blogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Blog not found"));
 
-        List<Article> articles = articleRepo.findByCollection(blog); // 🔍 aquí es donde carga artículos del blog
+        List<Article> articles = articleRepo.findByCollection(blog);
 
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
         model.addAttribute("blog", blog);
-        model.addAttribute("articles", articles); // 👈 ¡Esto es lo que necesitas para mostrar artículos!
-
+        model.addAttribute("articles", articles);
+        model.addAttribute("user", user);
         return "blog/view";
     }
 
@@ -105,47 +125,46 @@ public class BlogController {
 
     @GetMapping("/update/{id}")
     public String viewUpdate(@PathVariable UUID id, Model model) {
-        // Get authenticated user
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
         User user = userRepo.findUserByEmail(userEmail);
 
-        // Find the blog
         Collection blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
 
-        // Check if blog belongs to the user
         if (!blog.getUser().getId().equals(user.getId())) {
             return "redirect:/error?message=You don't have permission to update this blog";
         }
 
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
         model.addAttribute("blog", blog);
+        model.addAttribute("user", user);
         return "blog/update";
     }
 
     @PostMapping("/update/{id}")
     public String updateBlog(@PathVariable UUID id, @ModelAttribute Collection updatedBlog) {
-        // Get authenticated user
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
         User user = userRepo.findUserByEmail(userEmail);
 
-        // Find the blog
         Collection blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
 
-        // Check if blog belongs to the user
         if (!blog.getUser().getId().equals(user.getId())) {
             return "redirect:/error?message=You don't have permission to update this blog";
         }
 
-        // Update blog fields
         blog.setTitle(updatedBlog.getTitle());
         blog.setSummary(updatedBlog.getSummary());
         blog.setStatus(updatedBlog.getStatus());
         blog.setUpdated_at(LocalDateTime.now());
 
-        // Update slug if changed
         if (!updatedBlog.getSlug().equals(blog.getSlug())) {
             String tempSlug = updatedBlog.getSlug();
             int counter = 1;
@@ -155,7 +174,6 @@ public class BlogController {
             blog.setSlug(tempSlug);
         }
 
-        // Save the updated blog
         blogRepository.save(blog);
 
         return "redirect:/blog/list";
@@ -181,18 +199,5 @@ public class BlogController {
         blogRepository.delete(blog);
 
         return "redirect:/blog/list";
-    }
-
-    @ResponseBody
-    @GetMapping("/api/list")
-    public ResponseEntity<Map<String, Object>> getBlogs() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = auth.getName();
-        User user = userRepo.findUserByEmail(userEmail);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("blogs", blogRepository.findByUser(user));
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -13,4 +13,6 @@ public interface ArticleLikeRepository extends JpaRepository<ArticleLike, UUID> 
     Long countByArticle(Article article);
 
     Iterable<? extends ArticleLike> findByArticle(Article article);
+
+    void deleteByUser(User user);
 }

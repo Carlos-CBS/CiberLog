@@ -13,4 +13,6 @@ public interface UserBookmarkRepo extends JpaRepository<UserBookmark, UUID> {
     List<UserBookmark> findByUser(User user);
 
     UserBookmark findByArticle(Article article);
+
+    void deleteByUser(User user);
 }

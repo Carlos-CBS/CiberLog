@@ -3,6 +3,7 @@ package com.cyberlog.Repositories;
 import com.cyberlog.Models.Article;
 import com.cyberlog.Models.Comment;
 import com.cyberlog.Models.Report;
+import com.cyberlog.Models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +17,6 @@ public interface reportRepository extends JpaRepository<Report, UUID> {
     List<Report> findByComment(Comment comment);
 
     List<Report> findByArticle(Article article);
+
+    void deleteByUser(User user);
 }

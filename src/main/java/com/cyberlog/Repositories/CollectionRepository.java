@@ -16,6 +16,6 @@ public interface CollectionRepository extends JpaRepository<Collection, UUID> {
     boolean existsBySlug(String slug);
 
     Optional<Collection> findById(UUID id);
-    Optional<Object> findBySlug(String collectionSlug);
 
+    void deleteByUser(User user);
 }

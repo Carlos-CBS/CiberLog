@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;
@@ -97,9 +98,16 @@ public class ArticleController {
     public String viewCreate(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepo.findUserByEmail(auth.getName());
+
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
         model.addAttribute("collections", collectionRepo.findByUser(user));
         model.addAttribute("article", new Article());
         model.addAttribute("allTags", tagRepository.findAll());
+        model.addAttribute("user", user);
+
         return "article/create";
     }
 
@@ -109,7 +117,7 @@ public class ArticleController {
             @PathVariable String articleSlug,
             HttpServletRequest request,
             HttpServletResponse response,
-            Model model) {
+            Model model) throws IOException {
 
         User user = userRepo.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -142,15 +150,19 @@ public class ArticleController {
             }
 
         }
+        if (article.getStatus() == Article.Status.draft && (viewer == null || !viewer.equals(article.getUser()))) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Este artículo no está publicado.");
+            return null;
+        }
 
         boolean shouldCountView = false;
 
         if (viewer != null && !viewer.equals(article.getUser())) {
-            // Usuario autenticado: revisa última vista para evitar duplicados
+
             Optional<ArticleView> lastView = ViewRepo.findTopByUserAndArticleOrderByViewedAtDesc(viewer, article);
 
             shouldCountView = lastView.isEmpty() ||
-                    lastView.get().getViewedAt().isBefore(LocalDateTime.now().minusMinutes(1));
+                    lastView.get().getViewedAt().isBefore(LocalDateTime.now().minusWeeks(1));
 
             if (shouldCountView) {
                 ArticleView av = new ArticleView();
@@ -160,11 +172,10 @@ public class ArticleController {
                 articleViewRepository.save(av);
             }
         } else if (visitorId != null) {
-            // Usuario anónimo: cuenta vistas por visitorId
             Optional<ArticleView> lastView = ViewRepo.findTopByVisitorIdAndArticleOrderByViewedAtDesc(visitorId, article);
 
             shouldCountView = lastView.isEmpty() ||
-                    lastView.get().getViewedAt().isBefore(LocalDateTime.now().minusMinutes(1));
+                    lastView.get().getViewedAt().isBefore(LocalDateTime.now().minusWeeks(1));
 
             if (shouldCountView) {
                 ArticleView av = new ArticleView();
@@ -187,6 +198,10 @@ public class ArticleController {
         String htmlContent = MarkdownUtils.markdownToHtml(article.getContent());
         article.setContent(htmlContent);
 
+        String gravatarHash = md5Hex(user.getEmail());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
         model.addAttribute("article", article);
         model.addAttribute("collection", article.getCollection());
         model.addAttribute("user", user);
@@ -213,8 +228,6 @@ public class ArticleController {
         }
     }
 
-
-
     @PostMapping("/create")
     public String createArticle(
             @ModelAttribute("article") Article article,
@@ -229,15 +242,13 @@ public class ArticleController {
                 .orElseThrow(() -> new RuntimeException("Colección no encontrada"));
         article.setCollection(col);
 
-        // Asignar tags si hay
         if (tagIds != null && !tagIds.isEmpty()) {
             Set<Tag> tags = new HashSet<>(tagRepository.findAllById(tagIds));
             article.setTags(tags);
         } else {
-            article.setTags(new HashSet<>());  // o null si prefieres
+            article.setTags(new HashSet<>());
         }
 
-        // Manejo del slug
         if (article.getSlug() == null || article.getSlug().isBlank()) {
             String base = normalizeSlug(article.getTitle());
             String temp = base;
@@ -269,8 +280,13 @@ public class ArticleController {
             commentsMap.put(article.getId(), comments);
         }
 
+        String gravatarHash = md5Hex(user.getEmail());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
         model.addAttribute("articles", articles);
         model.addAttribute("commentsMap", commentsMap);
+        model.addAttribute("user", user);
         return "article/list";
     }
 
@@ -302,8 +318,14 @@ public class ArticleController {
         Article article = articleRepo.findByUserAndSlug(user, slug)
                 .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
 
+        String gravatarHash = md5Hex(user.getEmail());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
         model.addAttribute("article", article);
         model.addAttribute("collections", collectionRepo.findByUser(user));
+        model.addAttribute("user", user);
+
         return "article/update";
     }
 
@@ -382,33 +404,68 @@ public class ArticleController {
 
     @GetMapping("/home")
     public String home(@RequestParam(name = "tagIds", required = false) List<UUID> tagIds,
+                       @RequestParam(name = "sortBy", required = false, defaultValue = "newest") String sortBy,
                        Model model) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = null;
-
-        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
-            user = userRepo.findUserByEmail(auth.getName());
-        }
+        User user = userRepo.findUserByEmail(auth.getName());
 
         List<Article> articles;
+
+        // Aplicar filtro por tags
         if (tagIds != null && !tagIds.isEmpty()) {
-            articles = articleRepo.findByTags_IdIn(tagIds);
+            articles = articleRepo.findByStatusAndTags_IdIn(Article.Status.published, tagIds);
         } else {
-            articles = articleRepo.findAll();
+            articles = articleRepo.findByStatus(Article.Status.published);
         }
 
-        if (user != null) {
+        // Aplicar ordenamiento según el filtro seleccionado
+        switch (sortBy) {
+            case "oldest":
+                articles = articles.stream()
+                        .sorted((a1, a2) -> a1.getCreated_at().compareTo(a2.getCreated_at()))
+                        .collect(Collectors.toList());
+                break;
+            case "mostLiked":
+                articles = articles.stream()
+                        .sorted((a1, a2) -> Long.compare(a2.getLikesCount(), a1.getLikesCount()))
+                        .collect(Collectors.toList());
+                break;
+            case "mostUseful":
+                articles = articles.stream()
+                        .sorted((a1, a2) -> Integer.compare(a2.getUseful_count(), a1.getUseful_count()))
+                        .collect(Collectors.toList());
+                break;
+            case "mostViewed":
+                articles = articles.stream()
+                        .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews()))
+                        .collect(Collectors.toList());
+                break;
+            case "newest":
+            default:
+                articles = articles.stream()
+                        .sorted((a1, a2) -> a2.getCreated_at().compareTo(a1.getCreated_at()))
+                        .collect(Collectors.toList());
+                break;
+        }
+
+        if (user != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
             String gravatarHash = md5Hex(user.getEmail());
             String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
             model.addAttribute("user", user);
-            model.addAttribute("gravatarUrl", gravatarUrl);
+            model.addAttribute("gravatar", gravatarUrl);
         }
 
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
         List<Tag> allTags = tagRepository.findAll();
         model.addAttribute("allTags", allTags);
         model.addAttribute("articles", articles);
         model.addAttribute("selectedTagIds", tagIds);
+        model.addAttribute("selectedSortBy", sortBy);
+        model.addAttribute("user", user);
         return "general/home";
     }
 

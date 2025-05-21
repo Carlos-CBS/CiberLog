@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${article.title}">Título</title>
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/footer.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/navbar.js" defer></script>
+
     <style>
         :root {
             --primary: #05386B;
@@ -17,6 +20,7 @@
             --warning: #F0AD4E;
             --success: #5CB85C;
             --terminal-bg: #1B2A41;
+            --terminal-text: #ADCBE3;
             --terminal-text: #ADCBE3;
             --terminal-cursor: #2A4D69;
         }
@@ -80,21 +84,18 @@
 
         .comments-list {
             list-style: none;
-            padding-left: 0;
+            padding: 0;
+            margin: 0;
         }
 
         .comment-item {
-            background: #e8f0fe;
-            border-radius: 18px;
-            padding: 22px 28px;
-            margin-bottom: 28px;
-            box-shadow: 0 3px 16px rgba(42, 77, 105, 0.12);
-            transition: box-shadow 0.3s ease;
-            overflow: hidden; /* Esto evita que algo se salga */
-            position: relative;
-            max-width: 100%;
-            box-sizing: border-box;
+            background: #f5faff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(42, 77, 105, 0.08);
         }
+
 
         .comment-item:hover {
             box-shadow: 0 10px 30px rgba(42, 77, 105, 0.3);
@@ -198,7 +199,6 @@
         }
 
         button:hover {
-            background: var(--secondary);
             box-shadow: 0 8px 25px rgba(42, 77, 105, 0.45);
             transform: translateY(-2px);
         }
@@ -319,13 +319,11 @@
         }
 
         /* Estilos corregidos para el sistema de respuestas */
-        /* Contenedor de respuestas */
         .replies-container {
             margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #cce0ff;
+            padding-left: 30px; /* Indentamos las respuestas */
+            border-left: 3px solid var(--secondary); /* Línea vertical para mostrar jerarquía */
         }
-
         /* Título de respuestas */
         .replies-title {
             font-size: 1rem;
@@ -335,22 +333,19 @@
         }
 
         /* Lista de respuestas */
+
         .replies-list {
             list-style: none;
-            padding-left: 20px;
-            border-left: 3px solid var(--secondary);
-            margin: 15px 0;
+            padding: 0;
+            margin: 0;
         }
 
-        /* Elemento de respuesta */
         .reply-item {
             background: #d0e6ff;
             border-radius: 12px;
             padding: 15px 20px;
             margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(42, 77, 105, 0.08);
-            max-width: 100%;
-            box-sizing: border-box;
+            box-shadow: 0 1px 6px rgba(42, 77, 105, 0.05);
         }
 
         /* Formulario de respuesta */
@@ -378,11 +373,63 @@
         .reply-item {
             animation: fadeIn 0.3s ease-out;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: var(--danger);
+            font-size: 1.5rem;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            resize: vertical;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal .close {
+            color: #aaa;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal .close:hover {
+            color: black;
+        }
+
     </style>
 </head>
 <body>
-<div th:insert="fragments/navbar :: navbar"></div>
 
+<div th:insert="fragments/navbar :: navbar"></div>
 
 <div class="main-container">
     <div class="article-header">
@@ -419,6 +466,22 @@
         <p>More content explaining the techniques and findings presented in the terminal output above.</p>
     </div>
 
+    <div class="article-actions" style="margin-bottom: 30px;">
+        <form th:action="@{'/article/like/' + ${article.id}}" method="post" style="display:inline-block;">
+            <button type="submit" class="action-btn like-btn" aria-label="Like artículo">
+                <i class="fas fa-thumbs-up"></i> <span th:text="${article.getLikesCount()}">0</span>
+            </button>
+            <input type="hidden" name="articleId" th:value="${article.id}" />
+        </form>
+
+        <form th:action="@{'/article/useful/' + ${article.id}}" method="post" style="display:inline-block; margin-left: 10px;">
+            <button type="submit" class="action-btn" aria-label="Useful artículo">
+                <i  class="fas fa-lightbulb"></i> <span th:text="${article.getUseful_count()}">0</span>
+            </button>
+            <input type="hidden" name="articleId" th:value="${article.id}" />
+        </form>
+    </div>
+
     <div class="comments-section">
         <h3 class="comments-title"><i class="fas fa-comments"></i> Comentarios</h3>
 
@@ -434,7 +497,7 @@
 
         <ul class="comments-list">
             <li th:each="comment : ${comments}" class="comment-item">
-                <!-- Información del comentario principal -->
+
                 <div class="comment-header">
                     <div class="comment-author">
                         <i class="fas fa-user-circle"></i>
@@ -459,32 +522,31 @@
                         <input type="hidden" name="commentId" th:value="${comment.id}" />
                     </form>
 
-                    <form th:action="@{/comment/like}" method="post">
+                    <form th:action="@{/comment/like}" method="post" style="display:inline;">
                         <button type="submit" class="action-btn like-btn" aria-label="Like comentario">
-                            <i class="fas fa-thumbs-up"></i><span th:text="${comment.commentLike}">0</span>
+                            <i class="fas fa-thumbs-up"></i> <span th:text="${comment.commentLike}">0</span>
                         </button>
                         <input type="hidden" name="commentId" th:value="${comment.id}" />
                     </form>
 
-                    <form th:action="@{/comment/useful}" method="post">
+                    <form th:action="@{/comment/useful}" method="post" style="display:inline; margin-left:5px;">
                         <button type="submit" class="action-btn" aria-label="Useful comentario">
-                            <i class="fas fa-star"></i><span th:text="${comment.commentUseful}">0</span>
+                            <i  class="fas fa-lightbulb"></i> <span th:text="${comment.commentUseful}">0</span>
                         </button>
                         <input type="hidden" name="commentId" th:value="${comment.id}" />
                     </form>
                 </div>
 
                 <div class="report-form">
-                    <form th:action="@{/comment/report}" method="post">
-                        <input type="text" name="reportReason" placeholder="Motivo del reporte" />
-                        <button type="submit" class="action-btn report-btn" aria-label="Reportar comentario">
+                    <form th:action="@{/report/comment}" method="post">
+                        <input type="text" name="content" placeholder="Motivo del reporte" required />
+                        <input type="hidden" name="commentId" th:value="${comment.id}" />
+                        <button type="submit" class="action-btn report-btn">
                             <i class="fas fa-exclamation-triangle"></i> Reportar
                         </button>
-                        <input type="hidden" name="commentId" th:value="${comment.id}" />
                     </form>
                 </div>
 
-                <!-- Sección de respuestas -->
                 <div class="replies-container" th:if="${not #lists.isEmpty(comment.replies)}">
                     <div class="replies-title">
                         <i class="fas fa-reply-all"></i> Respuestas (<span th:text="${#lists.size(comment.replies)}">0</span>)
@@ -519,21 +581,57 @@
                     </ul>
                 </div>
 
-                <!-- Formulario para responder al comentario -->
                 <div class="reply-form">
                     <form th:action="@{/comment/add}" method="post" class="comment-form">
                         <input type="hidden" name="articleId" th:value="${article.id}" />
-                        <input type="hidden" name="parentId" th:value="${comment.id}" />
+                        <input type="hidden" name="parentCommentId" th:value="${comment.id}" />
                         <textarea name="content" placeholder="Responder a este comentario..." rows="2" required></textarea>
                         <button type="submit" aria-label="Responder comentario">
                             <i class="fas fa-reply"></i> Responder
                         </button>
                     </form>
                 </div>
+
             </li>
         </ul>
     </div>
+
+    <button type="button" class="action-btn report-btn" onclick="openReportModal()">
+        <i class="fas fa-exclamation-triangle"></i> Reportar artículo
+    </button>
+
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeReportModal()">&times;</span>
+            <form th:action="@{/report/article}" method="post">
+                <h3>Reportar Artículo</h3>
+                <input type="hidden" name="articleId" th:value="${article.id}" />
+                <textarea name="content" placeholder="Motivo del reporte..." required></textarea>
+                <button type="submit">Enviar Reporte</button>
+            </form>
+        </div>
+    </div>
+
 </div>
+
+<script>
+    function openReportModal() {
+        document.getElementById("reportModal").style.display = "block";
+    }
+
+    function closeReportModal() {
+        document.getElementById("reportModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById("reportModal");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+<div th:insert="/fragments/footer :: footer"></div>
 
 </body>
 </html>

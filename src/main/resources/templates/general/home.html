@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CiberLog - Cybersecurity Community</title>
+    <title>CiberLog - Cybersecurity Start</title>
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -25,174 +27,26 @@
             --text-muted: #6c757d;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--dark);
-            color: var(--light);
-            margin: 0;
-            background-image:
-                    radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px),
-                    radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px);
-            background-size: 30px 30px;
-            background-position: 0 0, 15px 15px;
             min-height: 100vh;
         }
 
-        .navbar {
-            background-color: var(--primary);
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .navbar-logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--light);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-right: 10px;
-        }
 
         .navbar-logo i {
             margin-right: 10px;
             color: var(--accent);
         }
 
-        .navbar-menu {
-            display: flex;
-            list-style: none;
-        }
-
-        .navbar-item {
-            margin-left: 20px;
-        }
-
-        .navbar-link {
-            color: var(--light);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 6px 12px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .navbar-link.active {
-            background-color: var(--accent);
-            color: var(--primary);
-        }
-
-        .navbar-user {
-            display: flex;
-            align-items: center;
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .user-dropdown {
-            position: relative;
-        }
-
-        .user-dropdown-btn {
-            background: none;
-            border: none;
-            color: var(--light);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            font-size: 0.9rem;
-        }
-
         .user-dropdown-btn i {
             margin-left: 5px;
-        }
-
-        .user-dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: white;
-            border-radius: 6px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            min-width: 180px;
-            display: none;
-            z-index: 1000;
-            margin-top: 10px;
-        }
-
-        .user-dropdown-menu.show {
-            display: block;
-        }
-
-        .user-dropdown-item {
-            display: block;
-            padding: 10px 15px;
-            color: var(--dark);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-        }
-
-        .user-dropdown-item:hover {
-            background-color: rgba(5, 56, 107, 0.05);
         }
 
         .user-dropdown-item i {
             margin-right: 10px;
             width: 16px;
             text-align: center;
-        }
-
-        .user-dropdown-divider {
-            height: 1px;
-            background-color: #e9ecef;
-            margin: 5px 0;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--light);
-            font-size: 1.5rem;
-            cursor: pointer;
         }
 
         .container {
@@ -256,22 +110,6 @@
             color: white;
         }
 
-        .filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            background-color: var(--primary);
-            border-radius: 6px;
-            padding: 8px 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
         .filter-group label {
             margin-right: 10px;
             font-size: 0.9rem;
@@ -291,63 +129,24 @@
             background-position: right 10px center;
             background-size: 12px;
         }
+        .filter-group select option {
+            background-color: var(--card-bg);
+            color: var(--terminal-bg);
+        }
+
 
         .filter-group select:focus {
-            outline: none;
             box-shadow: 0 0 0 2px rgba(92, 219, 149, 0.5);
         }
 
-        .search-bar {
-            display: flex;
-            flex-grow: 1;
-            max-width: 400px;
-        }
-
-        .search-input {
-            flex-grow: 1;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 6px 0 0 6px;
-            padding: 10px 15px;
-            color: var(--light);
-        }
-
-        .search-input::placeholder {
-            color: rgba(237, 245, 225, 0.5);
-        }
-
-        .search-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(92, 219, 149, 0.5);
-        }
-
-        .search-btn {
-            background-color: var(--accent);
-            border: none;
-            border-radius: 0 6px 6px 0;
-            color: var(--primary);
-            padding: 0 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .search-btn:hover {
-            background-color: #4ac184;
-        }
-
-        .tags-filter {
+        .tags-dropdown {
+            position: sticky;
+            top: 60px;
             background-color: var(--primary);
+            z-index: 10000;
+            padding: 10px 15px;
             border-radius: 6px;
-            padding: 8px 15px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tags-filter:hover {
-            background-color: rgba(5, 56, 107, 0.9);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .tags-filter i {
@@ -393,32 +192,6 @@
             font-size: 3rem;
             color: var(--accent);
             opacity: 0.7;
-        }
-
-        .article-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .badge-draft {
-            background-color: var(--terminal-bg);
-            color: var(--light);
-        }
-
-        .badge-review {
-            background-color: var(--warning);
-            color: var(--dark);
-        }
-
-        .badge-published {
-            background-color: var(--success);
-            color: white;
         }
 
         .article-content {
@@ -526,23 +299,6 @@
             background-color: #043057;
         }
 
-        .bookmark-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.2s ease;
-        }
-
-        .bookmark-btn:hover {
-            color: var(--warning);
-        }
-
-        .bookmark-btn.active {
-            color: var(--warning);
-        }
-
         .empty-state {
             text-align: center;
             padding: 3rem;
@@ -570,163 +326,6 @@
             margin: 0 auto;
         }
 
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 3rem;
-        }
-
-        .pagination-list {
-            display: flex;
-            list-style: none;
-            gap: 8px;
-        }
-
-        .pagination-item a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: var(--light);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .pagination-item a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .pagination-item.active a {
-            background-color: var(--accent);
-            color: var(--primary);
-        }
-
-        .pagination-item.disabled a {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1050;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background-color: white;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            animation: modalFadeIn 0.3s;
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .modal-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: all 0.2s ease;
-        }
-
-        .modal-close:hover {
-            color: var(--danger);
-        }
-
-        .modal-body {
-            padding: 20px;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            padding: 15px 20px;
-            border-top: 1px solid #e9ecef;
-            gap: 10px;
-        }
-
-        .modal-btn {
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-        }
-
-        .modal-btn-cancel {
-            background-color: var(--light);
-            color: var(--dark);
-        }
-
-        .modal-btn-cancel:hover {
-            background-color: #e9ecef;
-        }
-
-        .modal-btn-apply {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .modal-btn-apply:hover {
-            background-color: #043057;
-        }
-
-        .tags-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .tag-checkbox {
-            display: flex;
-            align-items: center;
-        }
-
         .tag-checkbox input[type="checkbox"] {
             margin-right: 8px;
         }
@@ -741,10 +340,6 @@
             align-items: center;
             overflow: hidden;
             position: relative;
-        }
-
-        .terminal-content {
-            flex-grow: 1;
         }
 
         .terminal-title {
@@ -821,15 +416,6 @@
 
         /* Media Queries */
         @media (max-width: 992px) {
-            .filters {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .search-bar {
-                max-width: 100%;
-            }
-
             .terminal-banner {
                 flex-direction: column;
                 text-align: center;
@@ -846,30 +432,6 @@
         }
 
         @media (max-width: 768px) {
-            .navbar-menu {
-                display: none;
-            }
-
-            .navbar-menu.show {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background-color: var(--primary);
-                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-                padding: 1rem;
-            }
-
-            .navbar-item {
-                margin: 10px 0;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
             .article-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
@@ -895,88 +457,142 @@
                 grid-template-columns: 1fr;
             }
 
-            .navbar-brand .navbar-logo {
-                font-size: 1.5rem;
-            }
-
             .article-title {
                 font-size: 1.2rem;
             }
+        }
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .tag-item {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tag-item label {
+            cursor: pointer;
+            padding: 6px 12px;
+            background-color: var(--light);
+            color: var(--dark);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        /* Hide the checkbox visually but keep it functional */
+        .tag-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* Style for when the checkbox is checked */
+        .tag-item input[type="checkbox"]:checked + span {
+            font-weight: bold;
+        }
+
+        /* Change background color of the entire label when checked */
+        .tag-item input[type="checkbox"]:checked ~ label,
+        .tag-item input[type="checkbox"]:checked + span {
+            background-color: var(--accent);
+            color: var(--primary);
+        }
+
+        /* Tag description tooltip styles */
+        .tag-description {
+            visibility: hidden;
+            opacity: 0;
+            width: max-content;
+            max-width: 220px;
+            background-color: var(--dark);
+            color: var(--light);
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 8px;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity 0.3s;
+            pointer-events: none;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        /* Show the tooltip on hover */
+        .tag-item:hover .tag-description {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .avatar {
+            height: 45px;
+            border-radius: 100px;
+            margin-right: 0.5dvw;
+        }
+        form button:hover {
+            color: darkblue;
+            transform: scale(1.1);
+        }
+        .filters-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--light);
+            white-space: nowrap;
+        }
+
+        .filter-group select {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--light);
+            padding: 8px 35px 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23edf5e1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            font-size: 0.9rem;
+            min-width: 160px;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(92, 219, 149, 0.5);
+        }
+        .filter-group select option:hover {
+            background-color: var(--secondary); /* Or any color you prefer */
         }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar">
-    <div class="navbar-container">
-        <a href="/" class="navbar-brand">
-            <div class="navbar-logo">
-                <i class="fas fa-shield-alt"></i>CiberLog
-            </div>
-        </a>
+<div th:insert="fragments/navbar :: navbar"></div>
 
-        <button class="mobile-menu-btn" id="mobile-menu-btn">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <ul class="navbar-menu" id="navbar-menu">
-            <li class="navbar-item">
-                <a href="/" class="navbar-link active">Home</a>
-            </li>
-            <li class="navbar-item">
-                <a href="/articles" class="navbar-link">Articles</a>
-            </li>
-            <li class="navbar-item">
-                <a href="/ctf" class="navbar-link">CTF Challenges</a>
-            </li>
-            <li class="navbar-item">
-                <a href="/tools" class="navbar-link">Tools</a>
-            </li>
-            <li class="navbar-item">
-                <a href="/community" class="navbar-link">Community</a>
-            </li>
-        </ul>
-
-        <div class="navbar-user">
-            <div class="user-dropdown">
-                <button class="user-dropdown-btn" id="user-dropdown-btn">
-                    <div th:if="${user!=Annonymous && user!=null}">
-                        <img th:src="${user.avatar != null ? user.avatar : gravatarUrl}" alt="User Avatar" class="avatar" />
-                    </div>
-                    <div th:if="${user==Annonymous || user==null}">
-                        <div class="user-avatar" th:text="${#strings.substring(#authentication.name,0,2)}">JS</div>
-                    </div>
-                    <span th:text="${#authentication.name}">John Smith</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="user-dropdown-menu" id="user-dropdown-menu">
-                    <a href="/profile" class="user-dropdown-item">
-                        <i class="fas fa-user"></i> My Profile
-                    </a>
-                    <a href="/bookmarks" class="user-dropdown-item">
-                        <i class="fas fa-bookmark"></i> Bookmarks
-                    </a>
-                    <a href="/settings" class="user-dropdown-item">
-                        <i class="fas fa-cog"></i> Settings
-                    </a>
-                    <div class="user-dropdown-divider"></div>
-                    <a href="/write" class="user-dropdown-item">
-                        <i class="fas fa-pen"></i> Write Article
-                    </a>
-                    <div class="user-dropdown-divider"></div>
-                    <a href="/logout" class="user-dropdown-item">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<!-- Main Content -->
 <div class="container">
-    <!-- Terminal Banner -->
     <div class="terminal-banner">
         <i class="fas fa-terminal terminal-icon"></i>
         <div class="terminal-content">
@@ -984,7 +600,7 @@
                 <span class="red"></span>
                 <span class="yellow"></span>
                 <span class="green"></span>
-                ~/secure-nexus
+                ~/Ciber-Log
             </div>
             <div class="terminal-text">
                 $ sudo access --weekly-challenge<br>
@@ -992,190 +608,135 @@
                 [+] New CTF challenge available: "Broken Authentication"<span class="terminal-cursor"></span>
             </div>
             <div class="banner-cta">
-                <a href="/ctf/challenges/latest" class="banner-btn">
-                    Try Challenge <i class="fas fa-chevron-right"></i>
+                <a class="banner-btn">
+                    ¡Apréndelo Todo! <i class="fas fa-chevron-right"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Page Header -->
+    <!-- Encabezado de Página -->
     <div class="page-header">
-        <h1 class="page-title">Latest Articles</h1>
+        <h1 class="page-title">Últimos Artículos</h1>
         <div class="action-buttons">
-            <a href="/write" class="btn btn-primary">
-                <i class="fas fa-pen"></i> Write Article
+            <a href="/article/create" class="btn btn-primary">
+                <i class="fas fa-pen"></i> Escribir Artículo
             </a>
-            <a href="/bookmarks" class="btn btn-outline">
-                <i class="fas fa-bookmark"></i> Bookmarks
+            <a href="/bookmarks/list" class="btn btn-outline">
+                <i class="fas fa-bookmark"></i> Guardados
             </a>
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="filters">
-        <div class="search-bar">
-            <input type="text" class="search-input" placeholder="Search articles..." th:value="${searchQuery}" name="query" form="search-form">
-            <button class="search-btn" form="search-form">
-                <i class="fas fa-search"></i>
+    <form method="get" action="/article/home">
+
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="sortBy">
+                    <i class="fas fa-sort"></i> Ordenar por:
+                </label>
+                <select name="sortBy" id="sortBy" onchange="this.form.submit()">
+                    <option value="newest" th:selected="${selectedSortBy == 'newest' or selectedSortBy == null}">
+                        Más recientes
+                    </option>
+                    <option value="oldest" th:selected="${selectedSortBy == 'oldest'}">
+                        Más antiguos
+                    </option>
+                    <option value="mostLiked" th:selected="${selectedSortBy == 'mostLiked'}">
+                        Más gustados
+                    </option>
+                    <option value="mostUseful" th:selected="${selectedSortBy == 'mostUseful'}">
+                        Más útiles
+                    </option>
+                    <option value="mostViewed" th:selected="${selectedSortBy == 'mostViewed'}">
+                        Más vistos
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <details class="tags-dropdown" style="margin-bottom: 2rem;">
+            <summary style="cursor: pointer; font-weight: bold; background-color: var(--primary); color: var(--light); padding: 10px 15px; border-radius: 6px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <i class="fas fa-tags" style="margin-right: 8px; color: var(--accent);"></i> Ver todos los tags
+            </summary>
+            <div class="tag-list">
+                <div th:each="tag : ${allTags}" class="tag-item">
+                    <input type="checkbox" name="tagIds"
+                           th:value="${tag.id}"
+                           th:id="'tag-' + ${tag.id}"
+                           th:checked="${selectedTagIds != null} ? ${selectedTagIds.contains(tag.id)} : false"
+                    />
+                    <label th:for="'tag-' + ${tag.id}" th:text="${tag.name}"></label>
+                    <span class="tag-description" th:text="${tag.description}"></span>
+                </div>
+            </div>
+            <button type="submit" style="margin-top: 15px; padding: 8px 16px; border-radius: 6px; background-color: var(--accent); color: var(--primary); border: none; cursor: pointer; font-weight: 600;">
+                Filtrar
             </button>
-        </div>
-        <form id="search-form" action="/articles/search" method="get"></form>
+        </details>
+    </form>
 
-        <div class="filter-group">
-            <label for="category">Category:</label>
-            <select id="category" onchange="this.form.submit()" form="filter-form" name="category">
-                <option value="all" th:selected="${category == null}">All Categories</option>
-                <option value="news" th:selected="${category == 'news'}">News</option>
-                <option value="tutorials" th:selected="${category == 'tutorials'}">Tutorials</option>
-                <option value="tools" th:selected="${category == 'tools'}">Tools</option>
-                <option value="writeups" th:selected="${category == 'writeups'}">CTF Writeups</option>
-                <option value="career" th:selected="${category == 'career'}">Career</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <label for="sort">Sort by:</label>
-            <select id="sort" onchange="this.form.submit()" form="filter-form" name="sort">
-                <option value="recent" th:selected="${sort == 'recent'}">Most Recent</option>
-                <option value="popular" th:selected="${sort == 'popular'}">Most Popular</option>
-                <option value="trending" th:selected="${sort == 'trending'}">Trending</option>
-                <option value="oldest" th:selected="${sort == 'oldest'}">Oldest First</option>
-            </select>
-        </div>
-        <form id="filter-form" action="/articles" method="get"></form>
-
-        <div class="tags-filter" onclick="openFilterModal()">
-            <i class="fas fa-tags"></i> Filter by Tags
-        </div>
-    </div>
-
-    <!-- Modal para filtrar por tags -->
-    <div id="filterModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Filter by Tags</h3>
-                <button type="button" class="modal-close" onclick="closeFilterModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <form method="get" action="/home">
-                    <div class="tags-grid">
-                        <div class="tag-checkbox" th:each="tag : ${allTags}">
-                            <input type="checkbox" name="tagIds" th:value="${tag.id}" th:id="${'tag-' + tag.id}"
-                                   th:checked="${selectedTagIds != null and selectedTagIds.contains(tag.id)}">
-                            <label th:for="${'tag-' + tag.id}" th:text="${tag.name}">Tag name</label>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="modal-btn modal-btn-cancel" onclick="closeFilterModal()">Cancel</button>
-                        <button type="submit" class="modal-btn modal-btn-apply">Apply Filters</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Articles Section -->
     <div th:if="${#lists.isEmpty(articles)}" class="empty-state">
         <i class="fas fa-file-alt"></i>
-        <h3>No articles found</h3>
-        <p>No articles found for the selected criteria. Try changing your filters or check back later.</p>
+        <h3>No se encontraron artículos</h3>
+        <p>No hemos encontrado artículos con los filtros seleccionados. Intenta cambiar los criterios o vuelve más tarde.</p>
     </div>
 
     <div th:unless="${#lists.isEmpty(articles)}" class="article-grid">
         <div th:each="article : ${articles}" class="article-card">
             <div class="article-image">
                 <i class="fas fa-code"></i>
-                <div th:switch="${article.status}" class="article-badge">
-                    <span th:case="'draft'" class="badge-draft">Draft</span>
-                    <span th:case="'review'" class="badge-review">Review</span>
-                    <span th:case="'published'" class="badge-published">Published</span>
-                </div>
             </div>
             <div class="article-content">
-                <h2 class="article-title" th:text="${article.title}">Article Title</h2>
+                <h2 class="article-title" th:text="${article.title}">Título del Artículo</h2>
                 <div class="article-meta">
                     <div class="article-author">
                         <div class="author-avatar" th:text="${#strings.substring(article.user.name,0,1)}">J</div>
-                        <span th:text="${article.user.name}">John Smith</span>
+                        <span th:text="${article.user.name}">Juan Pérez</span>
                     </div>
                     <div class="article-date">
                         <i class="fas fa-calendar-alt"></i>
                         <span th:text="${#temporals.format(article.created_at,'dd/MM/yyyy')}">01/01/2023</span>
                     </div>
+                    <form th:action="'/bookmarks/add/' + ${article.id}" method="post">
+                        <button style="background-color: transparent; border-color: transparent; cursor: pointer; font-size: 1.4rem; color: #5CDB95" type="submit">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </form>
                 </div>
                 <p class="article-description" th:text="${#strings.abbreviate(article.summary, 120)}">
-                    Article summary goes here. This is a brief description of what the article is about.
+                    Resumen del artículo. Aquí va una breve descripción del contenido del artículo.
                 </p>
                 <div class="article-tags">
-                    <span th:each="tag : ${article.tags}" class="article-tag" th:text="${tag.name}">Tag</span>
+                    <span th:each="tag : ${article.tags}" class="article-tag" th:text="${tag.name}">Etiqueta</span>
                 </div>
                 <div class="article-actions">
-                    <a th:href="@{'/article/view/' + ${article.user.name} + '/' + ${article.slug}}" class="article-btn read-btn">Read More</a>
-                    <form th:action="@{/bookmarks/add/{articleId}(articleId=${article.id})}" method="post" style="display: inline;">
-                        <button type="submit" class="bookmark-btn" th:classappend="${article.bookmarked} ? 'active' : ''">
-                            <i class="fas fa-bookmark"></i>
+                    <a th:href="@{'/article/view/' + ${article.user.name} + '/' + ${article.slug}}" class="article-btn read-btn">Leer más</a>
+                    <form th:action="@{/bookmarks/add/{articleId}(articleId=${article.id})}" method="post" style="display: inline;"></form>
+                    <form style="color: black" th:action="@{'/article/like/' + ${article.id}}" method="post">
+                        <button type="submit" style="background:none; border:none; cursor:pointer;">
+                            <i style="font-size: 1.2rem;" class="fas fa-thumbs-up"></i>
+                            <span style="font-size: 1.3rem;" th:text="${article.getLikesCount()}">3</span>
+                        </button>
+                    </form>
+                    <div style="color: black">
+                        <i style="font-size: 1.2rem;" class="fas fa-eye"></i>
+                        <span style="font-size: 1.3rem;" th:text="${article.getViews()}">3</span>
+                    </div>
+                    <form style="color: black" th:action="@{'/article/useful/' + ${article.id}}" method="post">
+                        <button type="submit" style="background:none; border:none; cursor:pointer;">
+                            <i style="font-size: 1.2rem;"  class="fas fa-lightbulb"></i>
+                            <span style="font-size: 1.3rem;" th:text="${article.getUseful_count()}">3</span>
                         </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Pagination -->
-    <div class="pagination" th:if="${totalPages > 1}">
-        <ul class="pagination-list">
-            <li class="pagination-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
-                <a th:href="@{${'/articles'}(page=${currentPage - 1}, size=${size}, sort=${sort}, category=${category}, tagIds=${selectedTagIds})}">
-                    <i class="fas fa-chevron-left"></i>
-                </a>
-            </li>
-            <li class="pagination-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i} ? 'active' : ''">
-                <a th:href="@{${'/articles'}(page=${i}, size=${size}, sort=${sort}, category=${category}, tagIds=${selectedTagIds})}" th:text="${i + 1}">1</a>
-            </li>
-            <li class="pagination-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
-                <a th:href="@{${'/articles'}(page=${currentPage + 1}, size=${size}, sort=${sort}, category=${category}, tagIds=${selectedTagIds})}">
-                    <i class="fas fa-chevron-right"></i>
-                </a>
-            </li>
-        </ul>
-    </div>
 </div>
 
-<script>
-    // Toggle mobile menu
-    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-        document.getElementById('navbar-menu').classList.toggle('show');
-    });
+<div th:insert="fragments/footer :: footer"></div>
+<script src="/js/navbar.js" defer></script>
 
-    // Toggle user dropdown
-    document.getElementById('user-dropdown-btn').addEventListener('click', function() {
-        document.getElementById('user-dropdown-menu').classList.toggle('show');
-    });
-
-    // Close user dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!event.target.closest('.user-dropdown') && document.getElementById('user-dropdown-menu').classList.contains('show')) {
-            document.getElementById('user-dropdown-menu').classList.remove('show');
-        }
-    });
-
-    // Functions for tag filter modal
-    function openFilterModal() {
-        document.getElementById("filterModal").classList.add("show");
-    }
-
-    function closeFilterModal() {
-        document.getElementById("filterModal").classList.remove("show");
-    }
-
-    // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        let modal = document.getElementById('filterModal');
-        if (event.target === modal) {
-            closeFilterModal();
-        }
-    });
-</script>
 </body>
 </html>

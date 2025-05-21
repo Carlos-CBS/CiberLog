@@ -1,56 +1,413 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <title>Admin - Reportes</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Reportes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/navbar.js" defer></script>
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        :root {
+            --primary: #05386B;
+            --secondary: #379683;
+            --accent: #5CDB95;
+            --dark: #2C3E50;
+            --light: #EDF5E1;
+            --danger: #E74C3C;
+            --warning: #F39C12;
+            --success: #2ECC71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            margin: 0;
+            padding: 0;
+            background-image:
+                    radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px),
+                    radial-gradient(rgba(5, 56, 107, 0.1) 2px, transparent 2px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .page-title {
+            color: var(--accent);
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .filter-select {
+            background-color: var(--dark);
+            color: var(--light);
+            border: 1px solid var(--secondary);
+            padding: 8px 12px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .search-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            position: relative;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border-radius: 4px;
+            border: 1px solid var(--secondary);
+            background-color: var(--dark);
+            color: var(--light);
+            outline: none;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            color: var(--accent);
+        }
+
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+
+        .reports-table thead {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .reports-table th {
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .reports-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #eee;
+            color: var(--dark);
+        }
+
+        .reports-table tbody tr:hover {
+            background-color: rgba(5, 56, 107, 0.05);
+        }
+
+        .reports-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .report-type {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .type-comment {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .type-article {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .report-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .status-resolved {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .status-dismissed {
+            background-color: #95A5A6;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-delete {
+            background-color: var(--danger);
+        }
+
+        .btn-dismiss {
+            background-color: var(--dark);
+        }
+
+        .action-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 60px 30px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .empty-state h3 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+
+        .empty-state p {
+            color: var(--light);
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+
+        .history-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 25px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .history-link:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 56, 107, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                margin: 10px auto;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .reports-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
 </head>
 <body>
-<h1>Reportes pendientes y resueltos</h1>
-<table border="1" cellpadding="5" cellspacing="0">
-    <thead>
-    <tr>
-        <th>ID Reporte</th>
-        <th>Tipo</th>
-        <th>Contenido reportado</th>
-        <th>Reportado por</th>
-        <th>Estado</th>
-        <th>Fecha</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="report : ${reports}">
-        <td th:text="${report.id}"></td>
-        <td th:text="${report.reportType}"></td>
-        <td>
-            <span th:if="${report.reportType.name() == 'comment'}" th:text="${report.comment.content}"></span>
-            <span th:if="${report.reportType.name() == 'article'}" th:text="${report.article.title}"></span>
-        </td>
-        <td th:text="${report.user.name}"></td>
-        <td th:text="${report.status}"></td>
-        <td th:text="${#temporals.format(report.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
-        <td>
-            <form th:if="${report.reportType.name() == 'comment'}" method="post" th:action="@{/admin/reports/delete-comment}">
-                <input type="hidden" name="commentId" th:value="${report.comment.id}" />
-                <input type="hidden" name="reportId" th:value="${report.id}" />
-                <button type="submit">Eliminar comentario</button>
-            </form>
 
-            <form th:if="${report.reportType.name() == 'article'}" method="post" th:action="@{/admin/reports/delete-article}">
-                <input type="hidden" name="articleId" th:value="${report.article.id}" />
-                <input type="hidden" name="reportId" th:value="${report.id}" />
-                <button type="submit">Eliminar artículo</button>
-            </form>
+<div th:insert="fragments/navbar :: navbar"></div>
 
-            <form method="post" th:action="@{/admin/reports/dismiss}">
-                <input type="hidden" name="reportId" th:value="${report.id}" />
-                <button type="submit">Dismiss</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<br/>
-<a href="/admin/deleted-records">Ver historial de eliminados</a>
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Administración de Reportes</h1>
+    </div>
+
+    <div class="filters">
+        <div class="filter-group">
+            <span class="filter-label">Tipo:</span>
+            <select class="filter-select">
+                <option value="">Todos</option>
+                <option value="comment">Comentarios</option>
+                <option value="article">Artículos</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <span class="filter-label">Estado:</span>
+            <select class="filter-select">
+                <option value="">Todos</option>
+                <option value="pending">Pendientes</option>
+                <option value="resolved">Resueltos</option>
+                <option value="dismissed">Descartados</option>
+            </select>
+        </div>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Buscar reportes...">
+        </div>
+    </div>
+
+    <div th:if="${reports.size() == 0}" class="empty-state">
+        <i class="fas fa-flag"></i>
+        <h3>No hay reportes registrados</h3>
+        <p>No se encontraron reportes en el sistema.</p>
+    </div>
+
+    <div th:unless="${reports.size() == 0}">
+        <table class="reports-table">
+            <thead>
+            <tr>
+                <th>ID Reporte</th>
+                <th>Tipo</th>
+                <th>Contenido reportado</th>
+                <th>Reportado por</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="report : ${reports}">
+                <td th:text="${report.id}"></td>
+                <td>
+                    <span th:if="${report.reportType.name() == 'comment'}" class="report-type type-comment">Comentario</span>
+                    <span th:if="${report.reportType.name() == 'article'}" class="report-type type-article">Artículo</span>
+                </td>
+                <td>
+                    <span th:if="${report.reportType.name() == 'comment'}" th:text="${report.comment.content}"></span>
+                    <span th:if="${report.reportType.name() == 'article'}" th:text="${report.article.title}"></span>
+                </td>
+                <td th:text="${report.user.name}"></td>
+                <td>
+                    <span th:if="${report.status.name() == 'pending'}" class="report-status status-pending">Pendiente</span>
+                    <span th:if="${report.status.name() == 'resolved'}" class="report-status status-resolved">Resuelto</span>
+                    <span th:if="${report.status.name() == 'dismissed'}" class="report-status status-dismissed">Descartado</span>
+                </td>
+                <td th:text="${#temporals.format(report.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                <td>
+                    <div class="action-buttons">
+                        <form th:if="${report.reportType.name() == 'comment'}" method="post" th:action="@{/admin/reports/delete-comment}">
+                            <input type="hidden" name="commentId" th:value="${report.comment.id}" />
+                            <input type="hidden" name="reportId" th:value="${report.id}" />
+                            <button type="submit" class="action-btn btn-delete">
+                                <i class="fas fa-trash"></i> Eliminar comentario
+                            </button>
+                        </form>
+
+                        <form th:if="${report.reportType.name() == 'article'}" method="post" th:action="@{/admin/reports/delete-article}">
+                            <input type="hidden" name="articleId" th:value="${report.article.id}" />
+                            <input type="hidden" name="reportId" th:value="${report.id}" />
+                            <button type="submit" class="action-btn btn-delete">
+                                <i class="fas fa-trash"></i> Eliminar artículo
+                            </button>
+                        </form>
+
+                        <form method="post" th:action="@{/admin/reports/dismiss}">
+                            <input type="hidden" name="reportId" th:value="${report.id}" />
+                            <button type="submit" class="action-btn btn-dismiss">
+                                <i class="fas fa-times"></i> Descartar
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a href="/admin/deleted-records" class="history-link">
+        <i class="fas fa-history"></i> Ver historial de eliminados
+    </a>
+</div>
+
+<div th:insert="fragments/footer :: footer"></div>
+
 </body>
 </html>

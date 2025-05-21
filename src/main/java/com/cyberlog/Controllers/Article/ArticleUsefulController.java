@@ -35,7 +35,7 @@ public class ArticleUsefulController {
     private UserRepo userRepo;
 
     @PostMapping("/useful/{id}")
-    public void toggleLike(@PathVariable("id") String articleId,
+    public String toggleLike(@PathVariable("id") String articleId,
                            HttpServletResponse response) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepo.findUserByEmail(auth.getName());
@@ -59,5 +59,6 @@ public class ArticleUsefulController {
         article.setLikesCount((int) newLikesCount);
         articleRepo.save(article);
 
+        return "redirect:/article/view/" + article.getUser().getName() + "/" + article.getSlug();
     }
 }

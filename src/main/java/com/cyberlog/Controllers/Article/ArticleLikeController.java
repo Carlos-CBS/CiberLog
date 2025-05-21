@@ -31,7 +31,7 @@ public class ArticleLikeController {
     private UserRepo userRepo;
 
     @PostMapping("/like/{id}")
-    public void toggleLike(@PathVariable("id") String articleId,
+    public String toggleLike(@PathVariable("id") String articleId,
                            HttpServletResponse response) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepo.findUserByEmail(auth.getName());
@@ -54,5 +54,7 @@ public class ArticleLikeController {
         long newLikesCount = likeRepo.countByArticle(article);
         article.setLikesCount((int) newLikesCount);
         articleRepo.save(article);
+
+        return "redirect:/article/view/" + article.getUser().getName() + "/" + article.getSlug();
     }
 }

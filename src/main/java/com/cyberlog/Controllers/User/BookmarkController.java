@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static com.cyberlog.Controllers.User.UserController.md5Hex;
+
 @Controller
 @RequestMapping("/bookmarks")
 public class BookmarkController {
@@ -38,7 +40,12 @@ public class BookmarkController {
 
         List<UserBookmark> userBookmarks = bookmarkRepo.findByUser(user);
 
+        String gravatarHash = md5Hex(auth.getName());
+        String gravatarUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?s=100&d=identicon";
+
+        model.addAttribute("gravatar", gravatarUrl);
         model.addAttribute("bookmarks", userBookmarks);
+        model.addAttribute("user", user);
         return "bookmarks/list";
     }
 
